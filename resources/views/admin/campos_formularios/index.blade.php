@@ -28,7 +28,7 @@
                             </thead>
                             <tbody>
                                 <tr ng-repeat="campos_formulario in campos_formularios track by $index">
-                                    <th scope="row">@{{ campos_formulario.id }}</th>
+                                    <td>@{{ campos_formulario.id }}</td>
                                     <td>@{{ campos_formulario.categoria.nombre }}</td>
                                     <td>@{{ campos_formulario.tipo_campo.nombre }}</td>
                                     <td>@{{ campos_formulario.nombre }}</td>
@@ -69,25 +69,40 @@
                     </div>
                     <div class="form-group">
                         <label for="nombre">Nombre:</label>
-                        <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre" ng-model="createForm.nombre" required autofocus>
+                        <input type="text" name="nombre" id="nombre" class="form-control" placeholder="con minúsculas" ng-model="createForm.nombre" required autofocus>
                     </div>
                     <div class="form-group">
                         <label for="etiqueta">Etiqueta (label):</label>
-                        <input type="text" name="etiqueta" id="etiqueta" class="form-control" placeholder="Etiqueta" ng-model="createForm.etiqueta" required autofocus>
+                        <input type="text" name="etiqueta" id="etiqueta" class="form-control" placeholder="Etiqueta (label)" ng-model="createForm.etiqueta" required autofocus>
                     </div>
                     <div class="form-group">
                         <label for="tipo_campo">Tipos de Campo:</label>
                         <select class="form-control" id="tipo_campo" name="tipo_campo" ng-model="createForm.tipo_campo" required>
                             <option value="">Elige una opcion...</option>
-                            <option ng-repeat="tipo_campo in tipos_campo" value="@{{ tipo_campo.id }}">
+                            <option ng-repeat="tipo_campo in tipos_campo" value="@{{ tipo_campo.nombre }}">
                                 @{{ tipo_campo.nombre }}</option>
                         </select>
+                    </div>
+                    <div class="form-group" ng-if="createForm.tipo_campo == 'text' || createForm.tipo_campo == 'password'" >
+                        <label for="minlength">Tamaño mínimo (minlength)</label>
+                        <input type="number" name="minlength" min="0" step="1" id="minlength" class="form-control" placeholder="Tamaño mínimo" ng-model="createForm.minlength" required autofocus>
+                    </div>
+                    <div class="form-group" ng-if="createForm.tipo_campo == 'number'">
+                        <label for="min">Tamaño mínimo (min)</label>
+                        <input type="number" name="min" min="0" step="1" id="min" class="form-control" placeholder="Tamaño mínimo" ng-model="createForm.min" required autofocus>
                     </div>
                     <div class="form-group custom-control custom-switch custom-switch-lg">
                         <input type="checkbox" class="custom-control-input form-control" id="requerido" name="requerido" ng-model="createForm.requerido">
                         <input type="hidden" id="input-requerido">
                         <label class="custom-control-label" for="requerido">
                             Requerido
+                        </label>
+                    </div>
+                    <div class="form-group custom-control custom-switch custom-switch-lg">
+                        <input type="checkbox" class="custom-control-input form-control" id="sololectura" name="sololectura" ng-model="createForm.sololectura">
+                        <input type="hidden" id="input-sololectura">
+                        <label class="custom-control-label" for="sololectura">
+                            Solo Lectura
                         </label>
                     </div>
                     <div class="form-group">
@@ -110,11 +125,11 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form ng-submit="update()">
+                <form ng-submit="update()" class="was-validated">
                     <input type="hidden" name="id" id="edit-id">
                     <div class="form-group">
                         <label for="edit-categoria_id">Formulario:</label>
-                        <select class="form-control" id="edit-categoria_id" name="edit-categoria_id" ng-model="editForm.formulario" required>
+                        <select class="form-control" id="edit-categoria_id" name="edit-categoria_id" ng-model="editForm.formulario">
                             <option value="">Elige una opcion...</option>
                             <option ng-repeat="formulario in formularios" value="@{{ formulario.id }}">
                                 @{{ formulario.nombre }}</option>
@@ -125,8 +140,12 @@
                         <input type="text" name="nombre" id="edit-nombre" class="form-control" placeholder="Nombre">
                     </div>
                     <div class="form-group">
+                        <label for="edit-etiqueta">Etiqueta (label):</label>
+                        <input type="text" name="edit-etiqueta" id="edit-etiqueta" class="form-control" placeholder="Etiqueta (label)" ng-model="editForm.etiqueta" autofocus>
+                    </div>
+                    <div class="form-group">
                         <label for="edit-tipo_campo_id">Tipos de Campo:</label>
-                        <select class="form-control" id="edit-tipo_campo_id" name="edit-tipo_campo_id" ng-model="editForm.tipo_campo_id" required>
+                        <select class="form-control" id="edit-tipo_campo_id" name="edit-tipo_campo_id" ng-model="editForm.tipo_campo_id">
                             <option value="">Elige una opcion...</option>
                             <option ng-repeat="tipo_campo in tipos_campo" value="@{{ tipo_campo.id }}">
                                 @{{ tipo_campo.nombre }}</option>

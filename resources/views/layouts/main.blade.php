@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{ asset('css/bootstrap-4.6.1/bootstrap.min.css') }}">
     <!-- FontAwesome -->
     <link href="{{ asset('css/fontawesome/all.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('css/main.css') }}" rel="stylesheet">
     <link href="{{ asset('css/bootstrap-select-1.13.14/bootstrap-select.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/ng-table.min.css') }}" rel="stylesheet">
     <!-- AngularJS -->

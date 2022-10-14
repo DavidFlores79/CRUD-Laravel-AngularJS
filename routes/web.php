@@ -23,11 +23,11 @@ Auth::routes();
 Route::middleware(['auth'])->group(function () {
     
     //usuarios
-    Route::get('home', [App\Http\Controllers\HomeController::class, 'index']);
+    Route::get('home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     //Route::get('usuarios', [App\Http\Controllers\HomeController::class, 'getUsuarios']);
-    Route::post('get-usuarios', [App\Http\Controllers\HomeController::class, 'getUsuarios']);
-    Route::get('usuarios/create', [App\Http\Controllers\HomeController::class, 'create']);
-    Route::get('usuarios/edit', [App\Http\Controllers\HomeController::class, 'edit']);
+    Route::get('get-usuarios', [App\Http\Controllers\HomeController::class, 'getUsuarios']);
+    Route::post('usuarios/create', [App\Http\Controllers\HomeController::class, 'create']);
+    Route::post('usuarios/edit', [App\Http\Controllers\HomeController::class, 'edit']);
     Route::post('usuarios', [App\Http\Controllers\HomeController::class, 'store']);
     Route::put('usuarios', [App\Http\Controllers\HomeController::class, 'update']);
     

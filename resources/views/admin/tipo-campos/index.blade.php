@@ -27,7 +27,7 @@
                             </thead>
                             <tbody>
                                 <tr ng-repeat="tipo_campo in tipo_campos track by $index">
-                                    <th scope="row">@{{ tipo_campo.id }}</th>
+                                    <td>@{{ tipo_campo.id }}</td>
                                     <td>@{{ tipo_campo.nombre }}</td>
                                     <td>@{{ tipo_campo.created_at | date }}</td>
                                     <td>
@@ -81,7 +81,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form ng-submit="update()">
+                <form ng-submit="update()" class="was-validated">
                     <input type="hidden" name="id" id="edit-id">
                     <div class="form-group">
                         <label for="nombre">Nombre:</label>

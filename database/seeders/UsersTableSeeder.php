@@ -17,7 +17,7 @@ class UsersTableSeeder extends Seeder
         User::create([
             'name' => 'Admin',
             'nickname' => 'admin',
-            'email' => 'admin@calimax.com',
+            'email' => 'admin@itsoft.mx',
             'password' => bcrypt('admin123'), // admin123
             //'perfil_id' => 1,
         ]);

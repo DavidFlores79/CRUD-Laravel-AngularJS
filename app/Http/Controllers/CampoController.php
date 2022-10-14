@@ -55,6 +55,12 @@ class CampoController extends Controller
         $rules = [
             'nombre' => 'required|string|max:255',
             'etiqueta' => 'required|string|max:255',
+            'formulario' => 'required|string|max:255',
+            'tipo_campo' => 'required|string|exists:tipo_campos,nombre|max:255',
+            'requerido' => 'boolean',
+            'sololectura' => 'boolean',
+            'minlength' => 'integer|max:255',
+            'min' => 'integer|max:255',
         ];
         $this->validate($request, $rules);
         //return $request;
@@ -63,9 +69,12 @@ class CampoController extends Controller
             $campos_formulario->nombre = $request->input('nombre');
             $campos_formulario->etiqueta = $request->input('etiqueta');
             $campos_formulario->categoria_id = $request->input('formulario');
-            $campos_formulario->tipo_campo_id = $request->input('tipo_campo');
-
+            $campos_formulario->tipo_campo_id = TipoCampo::where('nombre', $request->input('tipo_campo'))->pluck('id')->firstOrFail();
             if($request->input('requerido')) $campos_formulario->requerido = $request->input('requerido');
+            if($request->input('sololectura')) $campos_formulario->sololectura = $request->input('sololectura');
+            if($request->input('minlength')) $campos_formulario->minlength = $request->input('minlength');
+            if($request->input('min')) $campos_formulario->min = $request->input('min');
+            //return $campos_formulario;
 
             $campos_formulario->save();
             $campos_formulario = $campos_formulario->load('categoria','tipo_campo');

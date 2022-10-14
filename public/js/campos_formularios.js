@@ -73,6 +73,7 @@ app.controller('campos_formularios', function ($scope, $http) {
             function successCallback(response) {
                 console.log(response);
                 $scope.campos_formularios = [...$scope.campos_formularios, response.data.campos_formulario];
+                $scope.createForm = {};
                 $('#createForm').trigger('reset');
                 $('#agregarCamposFormulariosModal').modal('hide');
                 swal(
@@ -106,9 +107,11 @@ app.controller('campos_formularios', function ($scope, $http) {
     $scope.edit = function (campos_formulario) {
         console.log('cat: ', campos_formulario);
         $('#edit-nombre').val(campos_formulario.nombre);
+        $('#edit-etiqueta').val(campos_formulario.etiqueta);
         $('#edit-id').val(campos_formulario.id);
         $('#edit-categoria_id').val(campos_formulario.categoria.id);
         $('#edit-tipo_campo_id').val(campos_formulario.tipo_campo.id);
+        $('#edit-etiqueta').val(campos_formulario.etiqueta);
         
         $http({
             url: 'campos_formularios/edit',
@@ -137,6 +140,7 @@ app.controller('campos_formularios', function ($scope, $http) {
         let campos_formulario_editado = {
             id: $('#edit-id').val(),
             nombre: $('#edit-nombre').val(),
+            etiqueta: $('#edit-etiqueta').val(),
             categoria_id: $('#edit-categoria_id').val(),
             tipo_campo_id: $('#edit-tipo_campo_id').val(),
         };
@@ -163,11 +167,19 @@ app.controller('campos_formularios', function ($scope, $http) {
             },
             function errorCallback(response) {
                 console.log(response);
-                swal(
-                    'Mensaje del Sistema',
-                    response.data.message,
-                    response.data.status
-                );
+                if (response.status === 422) {
+                    let mensaje = '';
+                    for (let i in response.data.errors) {
+                        mensaje += response.data.errors[i] + '\n';
+                    }
+                    swal('Mensaje del Sistema', mensaje, 'error');
+                } else {
+                    swal(
+                        'Mensaje del Sistema',
+                        response.data.message,
+                        response.data.status
+                    );
+                }
             }
         );
     }

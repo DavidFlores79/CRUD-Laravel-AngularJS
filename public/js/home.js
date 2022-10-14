@@ -2,8 +2,8 @@ var app = angular.module('home', []);
 
 
 app.controller('home', function ($scope, $http) {
-    $scope.formulario = [];
-    $scope.formulario.nombre = 'usuarios';
+    $scope.formulario_crear = [];
+    $scope.formulario_editar = [];
     $scope.usuario = {};
     $scope.usuarios = [];
     $scope.createForm = {};
@@ -11,28 +11,32 @@ app.controller('home', function ($scope, $http) {
     
     $http({
         url: 'get-usuarios',
-        method: 'POST',
-        data: {
-            formulario: $scope.formulario.nombre
-        },
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
         },
     }).then(
         function successCallback(response) {
-            console.log(response);
+            console.log('index', response);
             $scope.usuarios = response.data.users;
-            $scope.formulario = response.data.formulario;
             console.log($scope.usuarios);
         },
         function errorCallback(response) {
             console.log(response);
-            swal(
-                configuraciones.titulo,
-                response.data.message,
-                tiposDeMensaje.error
-            );
+            if (response.status === 422) {
+                let mensaje = '';
+                for (let i in response.data.errors) {
+                    mensaje += response.data.errors[i] + '\n';
+                }
+                swal('Mensaje del Sistema', mensaje, 'error');
+            } else {
+                swal(
+                    'Mensaje del Sistema',
+                    response.data.message,
+                    response.data.status
+                );
+            }
         }
     );
 
@@ -40,7 +44,10 @@ app.controller('home', function ($scope, $http) {
 
         $http({
             url: 'usuarios/create',
-            method: 'GET',
+            method: 'POST',
+            data: {
+                formulario_crear: 'usuarios_crear'
+            },
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -48,16 +55,25 @@ app.controller('home', function ($scope, $http) {
         }).then(
             function successCallback(response) {
                 console.log(response);
+                $scope.formulario_crear = response.data.formulario_crear;
+                $('#agregarModal').modal('show');
                 $('#createForm').trigger('reset');
-                $('#agregarUsuarioModal').modal('show');
             },
             function errorCallback(response) {
                 console.log(response);
-                swal(
-                    'Mensaje del Sistema',
-                    response.data.message,
-                    response.data.status
-                );
+                if (response.status === 422) {
+                    let mensaje = '';
+                    for (let i in response.data.errors) {
+                        mensaje += response.data.errors[i] + '\n';
+                    }
+                    swal('Mensaje del Sistema', mensaje, 'error');
+                } else {
+                    swal(
+                        'Mensaje del Sistema',
+                        response.data.message,
+                        response.data.status
+                    );
+                }
             }
         );
     }
@@ -77,8 +93,9 @@ app.controller('home', function ($scope, $http) {
             function successCallback(response) {
                 console.log(response);
                 $scope.usuarios = [...$scope.usuarios, response.data.user];
+                $scope.createForm = {};
                 $('#createForm').trigger('reset');
-                $('#agregarUsuarioModal').modal('hide');
+                $('#agregarModal').modal('hide');
                 swal(
                     'Mensaje del Sistema',
                     response.data.message,
@@ -87,7 +104,7 @@ app.controller('home', function ($scope, $http) {
             },
             function errorCallback(response) {
                 console.log(response);
-                //$('#agregarUsuarioModal').modal('hide');
+                //$('#agregarModal').modal('hide');
                 
                 if (response.status === 422) {
                     let mensaje = '';
@@ -108,13 +125,19 @@ app.controller('home', function ($scope, $http) {
     }
 
     $scope.edit = function (usuario) {
-        $('#edit-name').val(usuario.name);
-        $('#edit-email').val(usuario.email);
-        $('#edit-id').val(usuario.id);
-        
+        $scope.editForm = {};
+        if(usuario.name) $scope.editForm['name'] = usuario.name;
+        if(usuario.email) $scope.editForm['email'] = usuario.email;
+        if(usuario.id) $scope.editForm['id'] = usuario.id;
+        if(usuario.direccion) $scope.editForm['direccion'] = usuario.direccion;
+        if(usuario.edad) $scope.editForm['edad'] = usuario.edad;
+
         $http({
             url: 'usuarios/edit',
-            method: 'GET',
+            method: 'POST',
+            data: {
+                formulario_editar: 'usuarios_editar'
+            },
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -122,30 +145,34 @@ app.controller('home', function ($scope, $http) {
         }).then(
             function successCallback(response) {
                 console.log(response);
-                $('#editarUsuarioModal').modal('show');
+                $scope.formulario_editar = response.data.formulario_editar;
+                $('#editarModal').modal('show');
             },
             function errorCallback(response) {
                 console.log(response);
-                swal(
-                    'Mensaje del Sistema',
-                    response.data.message,
-                    response.data.status
-                );
+                if (response.status === 422) {
+                    let mensaje = '';
+                    for (let i in response.data.errors) {
+                        mensaje += response.data.errors[i] + '\n';
+                    }
+                    swal('Mensaje del Sistema', mensaje, 'error');
+                } else {
+                    swal(
+                        'Mensaje del Sistema',
+                        response.data.message,
+                        response.data.status
+                    );
+                }
             }
         );
     }
 
     $scope.update = function () {
-        let usuario_editado = {
-            id: $('#edit-id').val(),
-            name: $('#edit-name').val(),
-            email: $('#edit-email').val()
-        };
 
         $http({
             url: `usuarios`,
             method: 'PUT',
-            data: usuario_editado,
+            data: $scope.editForm,
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -155,7 +182,7 @@ app.controller('home', function ($scope, $http) {
                 console.log('response: ', response);
                 $scope.usuario = response.data.user;
                 $scope.usuarios = $scope.usuarios.map(usuario => (usuario.id == response.data.user.id) ? usuario = response.data.user : usuario);
-                $('#editarUsuarioModal').modal('hide');
+                $('#editarModal').modal('hide');
                 swal(
                     'Mensaje del Sistema',
                     response.data.message,
@@ -164,11 +191,19 @@ app.controller('home', function ($scope, $http) {
             },
             function errorCallback(response) {
                 console.log(response);
-                swal(
-                    'Mensaje del Sistema',
-                    response.data.message,
-                    response.data.status
-                );
+                if (response.status === 422) {
+                    let mensaje = '';
+                    for (let i in response.data.errors) {
+                        mensaje += response.data.errors[i] + '\n';
+                    }
+                    swal('Mensaje del Sistema', mensaje, 'error');
+                } else {
+                    swal(
+                        'Mensaje del Sistema',
+                        response.data.message,
+                        response.data.status
+                    );
+                }
             }
         );
     }
@@ -212,7 +247,7 @@ app.controller('home', function ($scope, $http) {
         
     }
 
-    $('#editarUsuarioModal').on('hidden.bs.modal', function () {
+    $('#editarModal').on('hidden.bs.modal', function () {
         console.log('haz algo');
     });
     

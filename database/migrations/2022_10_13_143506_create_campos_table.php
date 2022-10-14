@@ -24,6 +24,7 @@ class CreateCamposTable extends Migration
             $table->boolean('requerido')->default(0);
             $table->boolean('visible')->default(1);    
             $table->integer('minlength')->nullable();
+            $table->integer('min')->nullable();
             $table->boolean('sololectura')->default(0);
             
             //superusuarios unicamente podran habilitarlos     

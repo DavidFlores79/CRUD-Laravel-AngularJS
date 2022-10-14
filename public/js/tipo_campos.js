@@ -155,11 +155,19 @@ app.controller('tipo_campos', function ($scope, $http) {
             },
             function errorCallback(response) {
                 console.log(response);
-                swal(
-                    'Mensaje del Sistema',
-                    response.data.message,
-                    response.data.status
-                );
+                if (response.status === 422) {
+                    let mensaje = '';
+                    for (let i in response.data.errors) {
+                        mensaje += response.data.errors[i] + '\n';
+                    }
+                    swal('Mensaje del Sistema', mensaje, 'error');
+                } else {
+                    swal(
+                        'Mensaje del Sistema',
+                        response.data.message,
+                        response.data.status
+                    );
+                }
             }
         );
     }

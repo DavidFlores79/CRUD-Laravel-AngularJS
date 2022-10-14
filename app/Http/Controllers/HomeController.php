@@ -21,14 +21,8 @@ class HomeController extends Controller
         return view('home');
     }
 
-    function getUsuarios(Request $request)
+    function getUsuarios()
     {
-        //validar el request
-        $rules = [
-            'formulario' => 'required|string|exists:categoria_campos,nombre',
-        ];
-        $this->validate($request, $rules);
-
         // $campos = DB::table('categoria_campos')
         //     ->join('campos', 'categoria_campos.id', '=', 'campos.categoria_id')
         //     ->join('tipo_campos', 'tipo_campos.id', '=', 'campos.tipo_campo_id')
@@ -43,15 +37,12 @@ class HomeController extends Controller
         // $campos = $campos->load('categoria', 'tipo_campo');
 
         $users = User::all();
-        $campos = Campo::where('categoria_id', CategoriaCampo::where('nombre', $request->input('formulario'))->pluck('id')->first())->get();
-        $campos = $campos->load('categoria', 'tipo_campo');
         
         if(is_object($users)){
             $data = [
                 'code' => 200,
                 'status' => 'success',
                 'users' => $users,
-                'formulario' => $campos,
             ];
         } else {
             $data = [
@@ -63,11 +54,21 @@ class HomeController extends Controller
         return response()->json($data, $data['code']);
     }
 
-    public function create()
+    public function create(Request $request)
     {
+        //validar el request
+        $rules = [
+            'formulario_crear' => 'required|string|exists:categoria_campos,nombre',
+        ];
+        $this->validate($request, $rules);
+        
+        $campos = Campo::where('categoria_id', CategoriaCampo::where('nombre', $request->input('formulario_crear'))->pluck('id')->first())->get();
+        $campos = $campos->load('categoria', 'tipo_campo');
+
         $data = [
             'code' => 200,
             'status' => 'success',
+            'formulario_crear' => $campos,
         ];
         return response()->json($data, $data['code']);
     }
@@ -77,9 +78,11 @@ class HomeController extends Controller
         //return $request;
         
         $rules = [
-            'email' => 'required|string|unique:users,email|min:1',
             'name' => 'required|string|max:255',
-            'password' => 'required|min:8|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email|min:3',
+            'password' => 'required|string|min:8', // |confirmed
+            'direccion' => 'string|max:255',
+            'edad' => 'integer|max:255',
         ];
         $this->validate($request, $rules);
 
@@ -88,6 +91,8 @@ class HomeController extends Controller
             $user->name = $request->input('name');
             $user->email = $request->input('email');
             $user->password = Hash::make($request->input('password'));
+            if($request->input('direccion')) $user->direccion = $request->input('direccion');
+            if($request->input('edad')) $user->edad = $request->input('edad');
             $user->save();
     
             if(is_object($user)) {
@@ -110,11 +115,21 @@ class HomeController extends Controller
 
     }
 
-    public function edit()
+    public function edit(Request $request)
     {
+        //validar el request
+        $rules = [
+            'formulario_editar' => 'required|string|exists:categoria_campos,nombre',
+        ];
+        $this->validate($request, $rules);
+
+        $campos = Campo::where('categoria_id', CategoriaCampo::where('nombre', $request->input('formulario_editar'))->pluck('id')->first())->get();
+        $campos = $campos->load('categoria', 'tipo_campo');
+
         $data = [
             'code' => 200,
             'status' => 'success',
+            'formulario_editar' => $campos,
         ];
         return response()->json($data, $data['code']);
     }
@@ -122,7 +137,18 @@ class HomeController extends Controller
     public function update(Request $request)
     {
         //return $request;
-        //falta validar request
+        //validar request
+        $rules = [
+            'name' => 'required|string|max:255',
+            'id' => 'required|exists:users,id',
+            //'usuario_nickname' => 'required|string|min:1|unique:users,nickname,'.$user->id,
+            'email' => 'required|string|email|max:255|min:3',
+            'password' => 'string|min:8', // |confirmed
+            'direccion' => 'string|max:255',
+            'edad' => 'integer|max:255',
+        ];
+        $this->validate($request, $rules);
+
         if($request->input('id'))
             $user = User::where('id',$request->input('id'))->first();
 
@@ -131,6 +157,8 @@ class HomeController extends Controller
             
                 $user->name = $request->input('name');
                 $user->email = $request->input('email');
+                if($request->input('direccion')) $user->direccion = $request->input('direccion');
+                if($request->input('edad')) $user->edad = $request->input('edad');
                 $user->save();
                 
                 $data = [
