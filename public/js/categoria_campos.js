@@ -1,20 +1,14 @@
-var app = angular.module('home', []);
+var app = angular.module('categoria_campos', []);
 
 
-app.controller('home', function ($scope, $http) {
-    $scope.formulario = [];
-    $scope.formulario.nombre = 'usuarios';
-    $scope.usuario = {};
-    $scope.usuarios = [];
+app.controller('categoria_campos', function ($scope, $http) {
+    $scope.categoria_campo = {};
+    $scope.categoria_campos = [];
     $scope.createForm = {};
-    $scope.name = '';
     
     $http({
-        url: 'get-usuarios',
-        method: 'POST',
-        data: {
-            formulario: $scope.formulario.nombre
-        },
+        url: 'categoria_campos',
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -22,9 +16,8 @@ app.controller('home', function ($scope, $http) {
     }).then(
         function successCallback(response) {
             console.log(response);
-            $scope.usuarios = response.data.users;
-            $scope.formulario = response.data.formulario;
-            console.log($scope.usuarios);
+            $scope.categoria_campos = response.data.categoria_campos;
+            console.log($scope.categoria_campos);
         },
         function errorCallback(response) {
             console.log(response);
@@ -39,7 +32,7 @@ app.controller('home', function ($scope, $http) {
     $scope.create = function () {
 
         $http({
-            url: 'usuarios/create',
+            url: 'categoria_campos/create',
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -49,7 +42,7 @@ app.controller('home', function ($scope, $http) {
             function successCallback(response) {
                 console.log(response);
                 $('#createForm').trigger('reset');
-                $('#agregarUsuarioModal').modal('show');
+                $('#agregarCategoriaCampoModal').modal('show');
             },
             function errorCallback(response) {
                 console.log(response);
@@ -63,10 +56,9 @@ app.controller('home', function ($scope, $http) {
     }
 
     $scope.store = function () {
-        // console.log('name:', $scope.createForm);
-        // return;
+
         $http({
-            url: 'usuarios',
+            url: 'categoria_campos',
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -76,9 +68,9 @@ app.controller('home', function ($scope, $http) {
         }).then(
             function successCallback(response) {
                 console.log(response);
-                $scope.usuarios = [...$scope.usuarios, response.data.user];
+                $scope.categoria_campos = [...$scope.categoria_campos, response.data.categoria_campo];
                 $('#createForm').trigger('reset');
-                $('#agregarUsuarioModal').modal('hide');
+                $('#agregarCategoriaCampoModal').modal('hide');
                 swal(
                     'Mensaje del Sistema',
                     response.data.message,
@@ -87,7 +79,7 @@ app.controller('home', function ($scope, $http) {
             },
             function errorCallback(response) {
                 console.log(response);
-                //$('#agregarUsuarioModal').modal('hide');
+                //$('#agregarCategoriaCampoModal').modal('hide');
                 
                 if (response.status === 422) {
                     let mensaje = '';
@@ -107,13 +99,13 @@ app.controller('home', function ($scope, $http) {
         );
     }
 
-    $scope.edit = function (usuario) {
-        $('#edit-name').val(usuario.name);
-        $('#edit-email').val(usuario.email);
-        $('#edit-id').val(usuario.id);
+    $scope.edit = function (categoria_campo) {
+        console.log('cat: ', categoria_campo);
+        $('#edit-nombre').val(categoria_campo.nombre);
+        $('#edit-id').val(categoria_campo.id);
         
         $http({
-            url: 'usuarios/edit',
+            url: 'categoria_campos/edit',
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -122,7 +114,7 @@ app.controller('home', function ($scope, $http) {
         }).then(
             function successCallback(response) {
                 console.log(response);
-                $('#editarUsuarioModal').modal('show');
+                $('#editarCategoriaCampoModal').modal('show');
             },
             function errorCallback(response) {
                 console.log(response);
@@ -136,16 +128,15 @@ app.controller('home', function ($scope, $http) {
     }
 
     $scope.update = function () {
-        let usuario_editado = {
+        let categoria_campo_editado = {
             id: $('#edit-id').val(),
-            name: $('#edit-name').val(),
-            email: $('#edit-email').val()
+            nombre: $('#edit-nombre').val(),
         };
 
         $http({
-            url: `usuarios`,
+            url: `categoria_campos`,
             method: 'PUT',
-            data: usuario_editado,
+            data: categoria_campo_editado,
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -153,9 +144,9 @@ app.controller('home', function ($scope, $http) {
         }).then(
             function successCallback(response) {
                 console.log('response: ', response);
-                $scope.usuario = response.data.user;
-                $scope.usuarios = $scope.usuarios.map(usuario => (usuario.id == response.data.user.id) ? usuario = response.data.user : usuario);
-                $('#editarUsuarioModal').modal('hide');
+                $scope.categoria_campo = response.data.categoria_campo;
+                $scope.categoria_campos = $scope.categoria_campos.map(categoria_campo => (categoria_campo.id == response.data.categoria_campo.id) ? categoria_campo = response.data.categoria_campo : categoria_campo);
+                $('#editarCategoriaCampoModal').modal('hide');
                 swal(
                     'Mensaje del Sistema',
                     response.data.message,
@@ -173,17 +164,17 @@ app.controller('home', function ($scope, $http) {
         );
     }
 
-    $scope.confirmarEliminar = function (usuario) {
-        $scope.usuario = usuario;
-        $('#nombre-usuario').html(usuario.name);
-        $('#eliminarUsuarioModal').modal('show');
+    $scope.confirmarEliminar = function (categoria_campo) {
+        $scope.categoria_campo = categoria_campo;
+        $('#nombre-categoria_campo').html(categoria_campo.nombre);
+        $('#eliminarCategoriaCampoModal').modal('show');
     }
 
     $scope.delete = function () {
-        console.log('usuario: ', $scope.usuario);
+        console.log('categoria_campo: ', $scope.categoria_campo);
 
         $http({
-            url: `usuarios/${$scope.usuario.id}`,
+            url: `categoria_campos/${$scope.categoria_campo.id}`,
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -192,8 +183,8 @@ app.controller('home', function ($scope, $http) {
         }).then(
             function successCallback(response) {
                 console.log(response);
-                $scope.usuarios = $scope.usuarios.filter(usuario => usuario.id !== $scope.usuario.id);
-                $('#eliminarUsuarioModal').modal('hide');
+                $scope.categoria_campos = $scope.categoria_campos.filter(categoria_campo => categoria_campo.id !== $scope.categoria_campo.id);
+                $('#eliminarCategoriaCampoModal').modal('hide');
                 swal(
                     'Mensaje del Sistema',
                     response.data.message,

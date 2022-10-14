@@ -4056,7 +4056,7 @@ readers do not read off random characters that represent icons */
 .fa-user-nurse:before {
   content: "\f82f"; }
 
-.fa-user-plus:before {
+.fa-plus-square:before {
   content: "\f234"; }
 
 .fa-user-secret:before {

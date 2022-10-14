@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Campo;
+use App\Models\CategoriaCampo;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
@@ -18,16 +21,37 @@ class HomeController extends Controller
         return view('home');
     }
 
-    function getUsuarios()
+    function getUsuarios(Request $request)
     {
-        // return "Hola mundo!";
+        //validar el request
+        $rules = [
+            'formulario' => 'required|string|exists:categoria_campos,nombre',
+        ];
+        $this->validate($request, $rules);
+
+        // $campos = DB::table('categoria_campos')
+        //     ->join('campos', 'categoria_campos.id', '=', 'campos.categoria_id')
+        //     ->join('tipo_campos', 'tipo_campos.id', '=', 'campos.tipo_campo_id')
+        //     ->select('categoria_campos.*', 'campos.*', 'tipo_campos.*')
+        //     ->where('categoria_campos.nombre', '=', 'usuarios')
+        //     ->get();
+
+        // $campos = Campo::join('tipo_campos', 'tipo_campos.id', '=', 'campos.tipo_campo_id')
+        //     ->join('categoria_campos', 'categoria_campos.id', '=', 'campos.categoria_id')
+        //     ->where('categoria_campos.nombre', '=', 'usuarios')->get();   
+            
+        // $campos = $campos->load('categoria', 'tipo_campo');
+
         $users = User::all();
+        $campos = Campo::where('categoria_id', CategoriaCampo::where('nombre', $request->input('formulario'))->pluck('id')->first())->get();
+        $campos = $campos->load('categoria', 'tipo_campo');
         
         if(is_object($users)){
             $data = [
                 'code' => 200,
                 'status' => 'success',
                 'users' => $users,
+                'formulario' => $campos,
             ];
         } else {
             $data = [
@@ -50,6 +74,8 @@ class HomeController extends Controller
 
     public function store(Request $request) 
     {
+        //return $request;
+        
         $rules = [
             'email' => 'required|string|unique:users,email|min:1',
             'name' => 'required|string|max:255',

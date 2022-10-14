@@ -29,18 +29,17 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
             <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="{{ url('home') }}">Usuarios <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Features</a>
+                <a class="nav-link" href="{{ url('categorias-de-campos') }}">Tipos de Formularios</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Pricing</a>
+                <a class="nav-link" href="{{ url('tipos-de-campos') }}">Tipo de Campos</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link disabled">Disabled</a>
+                <a class="nav-link" href="{{ url('campos-para-formularios') }}">Crear Formularios</a>
             </li>
-
             </ul>
             <ul class="navbar-nav mx-auto">
 

@@ -1,20 +1,16 @@
-var app = angular.module('home', []);
+var app = angular.module('campos_formularios', []);
 
 
-app.controller('home', function ($scope, $http) {
-    $scope.formulario = [];
-    $scope.formulario.nombre = 'usuarios';
-    $scope.usuario = {};
-    $scope.usuarios = [];
+app.controller('campos_formularios', function ($scope, $http) {
+    $scope.campos_formulario = {};
+    $scope.campos_formularios = [];
+    $scope.formularios = [];
+    $scope.tipos_campo = [];
     $scope.createForm = {};
-    $scope.name = '';
     
     $http({
-        url: 'get-usuarios',
-        method: 'POST',
-        data: {
-            formulario: $scope.formulario.nombre
-        },
+        url: 'campos_formularios',
+        method: 'GET',
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -22,9 +18,10 @@ app.controller('home', function ($scope, $http) {
     }).then(
         function successCallback(response) {
             console.log(response);
-            $scope.usuarios = response.data.users;
-            $scope.formulario = response.data.formulario;
-            console.log($scope.usuarios);
+            $scope.campos_formularios = response.data.campos_formularios;
+            $scope.formularios = response.data.formularios;
+            $scope.tipos_campo = response.data.tipos_campo;
+            console.log($scope.campos_formularios);
         },
         function errorCallback(response) {
             console.log(response);
@@ -39,7 +36,7 @@ app.controller('home', function ($scope, $http) {
     $scope.create = function () {
 
         $http({
-            url: 'usuarios/create',
+            url: 'campos_formularios/create',
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -47,9 +44,9 @@ app.controller('home', function ($scope, $http) {
             },
         }).then(
             function successCallback(response) {
-                console.log(response);
+                console.log(response);    
                 $('#createForm').trigger('reset');
-                $('#agregarUsuarioModal').modal('show');
+                $('#agregarCamposFormulariosModal').modal('show');
             },
             function errorCallback(response) {
                 console.log(response);
@@ -63,10 +60,9 @@ app.controller('home', function ($scope, $http) {
     }
 
     $scope.store = function () {
-        // console.log('name:', $scope.createForm);
-        // return;
+
         $http({
-            url: 'usuarios',
+            url: 'campos_formularios',
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -76,9 +72,9 @@ app.controller('home', function ($scope, $http) {
         }).then(
             function successCallback(response) {
                 console.log(response);
-                $scope.usuarios = [...$scope.usuarios, response.data.user];
+                $scope.campos_formularios = [...$scope.campos_formularios, response.data.campos_formulario];
                 $('#createForm').trigger('reset');
-                $('#agregarUsuarioModal').modal('hide');
+                $('#agregarCamposFormulariosModal').modal('hide');
                 swal(
                     'Mensaje del Sistema',
                     response.data.message,
@@ -87,7 +83,7 @@ app.controller('home', function ($scope, $http) {
             },
             function errorCallback(response) {
                 console.log(response);
-                //$('#agregarUsuarioModal').modal('hide');
+                //$('#agregarCamposFormulariosModal').modal('hide');
                 
                 if (response.status === 422) {
                     let mensaje = '';
@@ -107,13 +103,15 @@ app.controller('home', function ($scope, $http) {
         );
     }
 
-    $scope.edit = function (usuario) {
-        $('#edit-name').val(usuario.name);
-        $('#edit-email').val(usuario.email);
-        $('#edit-id').val(usuario.id);
+    $scope.edit = function (campos_formulario) {
+        console.log('cat: ', campos_formulario);
+        $('#edit-nombre').val(campos_formulario.nombre);
+        $('#edit-id').val(campos_formulario.id);
+        $('#edit-categoria_id').val(campos_formulario.categoria.id);
+        $('#edit-tipo_campo_id').val(campos_formulario.tipo_campo.id);
         
         $http({
-            url: 'usuarios/edit',
+            url: 'campos_formularios/edit',
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -122,7 +120,7 @@ app.controller('home', function ($scope, $http) {
         }).then(
             function successCallback(response) {
                 console.log(response);
-                $('#editarUsuarioModal').modal('show');
+                $('#editarCamposFormulariosModal').modal('show');
             },
             function errorCallback(response) {
                 console.log(response);
@@ -136,16 +134,17 @@ app.controller('home', function ($scope, $http) {
     }
 
     $scope.update = function () {
-        let usuario_editado = {
+        let campos_formulario_editado = {
             id: $('#edit-id').val(),
-            name: $('#edit-name').val(),
-            email: $('#edit-email').val()
+            nombre: $('#edit-nombre').val(),
+            categoria_id: $('#edit-categoria_id').val(),
+            tipo_campo_id: $('#edit-tipo_campo_id').val(),
         };
 
         $http({
-            url: `usuarios`,
+            url: `campos_formularios`,
             method: 'PUT',
-            data: usuario_editado,
+            data: campos_formulario_editado,
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -153,9 +152,9 @@ app.controller('home', function ($scope, $http) {
         }).then(
             function successCallback(response) {
                 console.log('response: ', response);
-                $scope.usuario = response.data.user;
-                $scope.usuarios = $scope.usuarios.map(usuario => (usuario.id == response.data.user.id) ? usuario = response.data.user : usuario);
-                $('#editarUsuarioModal').modal('hide');
+                $scope.campos_formulario = response.data.campos_formulario;
+                $scope.campos_formularios = $scope.campos_formularios.map(campos_formulario => (campos_formulario.id == response.data.campos_formulario.id) ? campos_formulario = response.data.campos_formulario : campos_formulario);
+                $('#editarCamposFormulariosModal').modal('hide');
                 swal(
                     'Mensaje del Sistema',
                     response.data.message,
@@ -173,17 +172,17 @@ app.controller('home', function ($scope, $http) {
         );
     }
 
-    $scope.confirmarEliminar = function (usuario) {
-        $scope.usuario = usuario;
-        $('#nombre-usuario').html(usuario.name);
-        $('#eliminarUsuarioModal').modal('show');
+    $scope.confirmarEliminar = function (campos_formulario) {
+        $scope.campos_formulario = campos_formulario;
+        $('#nombre-campos_formulario').html(campos_formulario.nombre);
+        $('#eliminarCamposFormulariosModal').modal('show');
     }
 
     $scope.delete = function () {
-        console.log('usuario: ', $scope.usuario);
+        console.log('campos_formulario: ', $scope.campos_formulario);
 
         $http({
-            url: `usuarios/${$scope.usuario.id}`,
+            url: `campos_formularios/${$scope.campos_formulario.id}`,
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -192,8 +191,8 @@ app.controller('home', function ($scope, $http) {
         }).then(
             function successCallback(response) {
                 console.log(response);
-                $scope.usuarios = $scope.usuarios.filter(usuario => usuario.id !== $scope.usuario.id);
-                $('#eliminarUsuarioModal').modal('hide');
+                $scope.campos_formularios = $scope.campos_formularios.filter(campos_formulario => campos_formulario.id !== $scope.campos_formulario.id);
+                $('#eliminarCamposFormulariosModal').modal('hide');
                 swal(
                     'Mensaje del Sistema',
                     response.data.message,
