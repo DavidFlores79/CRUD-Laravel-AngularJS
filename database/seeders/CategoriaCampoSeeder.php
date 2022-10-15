@@ -15,10 +15,20 @@ class CategoriaCampoSeeder extends Seeder
     public function run()
     {
         CategoriaCampo::create([
-            'nombre' => 'usuarios',
+            'nombre' => 'usuarios_crear',
+            'tabla' => 'users',
         ]);
         CategoriaCampo::create([
-            'nombre' => 'perfiles',
+            'nombre' => 'usuarios_editar',
+            'tabla' => 'users',
+        ]);
+        CategoriaCampo::create([
+            'nombre' => 'perfiles_crear',
+            'tabla' => 'perfiles',
+        ]);
+        CategoriaCampo::create([
+            'nombre' => 'perfiles_editar',
+            'tabla' => 'perfiles',
         ]);
     }
 }

@@ -2,12 +2,11 @@ var app = angular.module('home', []);
 
 
 app.controller('home', function ($scope, $http) {
+    $scope.createForm = {};
     $scope.formulario_crear = [];
     $scope.formulario_editar = [];
-    $scope.usuario = {};
-    $scope.usuarios = [];
-    $scope.createForm = {};
-    $scope.name = '';
+    $scope.dato = {};
+    $scope.datos = [];
     
     $http({
         url: 'get-usuarios',
@@ -19,8 +18,8 @@ app.controller('home', function ($scope, $http) {
     }).then(
         function successCallback(response) {
             console.log('index', response);
-            $scope.usuarios = response.data.users;
-            console.log($scope.usuarios);
+            $scope.datos = response.data.users;
+            console.log($scope.datos);
         },
         function errorCallback(response) {
             console.log(response);
@@ -57,7 +56,9 @@ app.controller('home', function ($scope, $http) {
                 console.log(response);
                 $scope.formulario_crear = response.data.formulario_crear;
                 $('#agregarModal').modal('show');
-                $('#createForm').trigger('reset');
+                setTimeout(() => {
+                    $('#createForm').trigger('reset');
+                }, 500);
             },
             function errorCallback(response) {
                 console.log(response);
@@ -92,7 +93,7 @@ app.controller('home', function ($scope, $http) {
         }).then(
             function successCallback(response) {
                 console.log(response);
-                $scope.usuarios = [...$scope.usuarios, response.data.user];
+                $scope.datos = [...$scope.datos, response.data.user];
                 $scope.createForm = {};
                 $('#createForm').trigger('reset');
                 $('#agregarModal').modal('hide');
@@ -180,8 +181,8 @@ app.controller('home', function ($scope, $http) {
         }).then(
             function successCallback(response) {
                 console.log('response: ', response);
-                $scope.usuario = response.data.user;
-                $scope.usuarios = $scope.usuarios.map(usuario => (usuario.id == response.data.user.id) ? usuario = response.data.user : usuario);
+                $scope.dato = response.data.user;
+                $scope.datos = $scope.datos.map(usuario => (usuario.id == response.data.user.id) ? usuario = response.data.user : usuario);
                 $('#editarModal').modal('hide');
                 swal(
                     'Mensaje del Sistema',
@@ -209,16 +210,16 @@ app.controller('home', function ($scope, $http) {
     }
 
     $scope.confirmarEliminar = function (usuario) {
-        $scope.usuario = usuario;
+        $scope.dato = usuario;
         $('#nombre-usuario').html(usuario.name);
-        $('#eliminarUsuarioModal').modal('show');
+        $('#eliminarModal').modal('show');
     }
 
     $scope.delete = function () {
-        console.log('usuario: ', $scope.usuario);
+        console.log('usuario: ', $scope.dato);
 
         $http({
-            url: `usuarios/${$scope.usuario.id}`,
+            url: `usuarios/${$scope.dato.id}`,
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -227,8 +228,8 @@ app.controller('home', function ($scope, $http) {
         }).then(
             function successCallback(response) {
                 console.log(response);
-                $scope.usuarios = $scope.usuarios.filter(usuario => usuario.id !== $scope.usuario.id);
-                $('#eliminarUsuarioModal').modal('hide');
+                $scope.datos = $scope.datos.filter(usuario => usuario.id !== $scope.dato.id);
+                $('#eliminarModal').modal('hide');
                 swal(
                     'Mensaje del Sistema',
                     response.data.message,

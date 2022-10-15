@@ -27,14 +27,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="usuario in usuarios track by $index">
-                                    <td>@{{ usuario.id }}</td>
-                                    <td>@{{ usuario.name }}</td>
-                                    <td>@{{ usuario.email }}</td>
-                                    <td>@{{ usuario.created_at | date }}</td>
+                                <tr ng-repeat="dato in datos track by $index">
+                                    <td>@{{ dato.id }}</td>
+                                    <td>@{{ dato.name }}</td>
+                                    <td>@{{ dato.email }}</td>
+                                    <td>@{{ dato.created_at | date }}</td>
                                     <td>
-                                        <button type="button" class="btn btn-sm btn-primary" ng-click="edit(usuario)"><i class="fas fa-edit"></i></button>
-                                        <button type="button" class="btn btn-sm btn-danger" ng-click="confirmarEliminar(usuario)" ng-if="usuario.id != {{ auth()->user()->id }}"><i class="fas fa-trash"></i></button>
+                                        <button type="button" class="btn btn-sm btn-primary" ng-click="edit(dato)"><i class="fas fa-edit"></i></button>
+                                        <button type="button" class="btn btn-sm btn-danger" ng-click="confirmarEliminar(dato)" ng-if="dato.id != {{ auth()->user()->id }}"><i class="fas fa-trash"></i></button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -47,12 +47,12 @@
 </div>
 
 
-<!-- Modal Crear Usuario -->
+<!-- Modal Crear -->
 <div class="modal fade" id="agregarModal" tabindex="-1" aria-labelledby="agregarModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="agregarModalLabel">Crear Usuario</h5>
+                <h5 class="modal-title" id="agregarModalLabel">Crear @yield('page-title')</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -82,21 +82,21 @@
     </div>
 </div>
 
-<!-- Modal Editar Usuario -->
+<!-- Modal Editar -->
 <div class="modal fade" id="editarModal" tabindex="-1" aria-labelledby="editarModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editarModalLabel">Editar Usuario</h5>
+                <h5 class="modal-title" id="editarModalLabel">Editar @yield('page-title')</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <form ng-submit="update()" class="was-validated">
-                    <input type="hidden" name="id" ng-model="editForm.id">
+                    <!-- <input type="hidden" name="id" ng-model="editForm.id"> -->
                     <div class="form-group" ng-repeat="campo in formulario_editar track by $index">
-                        <label for="@{{ campo.nombre }}">@{{ campo.etiqueta }}</label>
+                        <label ng-if="campo.tipo_campo.nombre != 'hidden'" for="@{{ campo.nombre }}">@{{ campo.etiqueta }}</label>
                         <input  type="@{{ campo.tipo_campo.nombre }}" 
                                 minlength="@{{ campo.minlength }}" 
                                 min="@{{ campo.min }}" 
@@ -118,12 +118,12 @@
     </div>
 </div>
 
-<!-- Modal Eliminar Usuario-->
-<div class="modal fade" id="eliminarUsuarioModal" tabindex="-1" aria-labelledby="eliminarUsuarioModalLabel" aria-hidden="true">
+<!-- Modal Eliminar-->
+<div class="modal fade" id="eliminarModal" tabindex="-1" aria-labelledby="eliminarModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="eliminarUsuarioModalLabel">Crear Usuario</h5>
+                <h5 class="modal-title" id="eliminarModalLabel">Crear Usuario</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

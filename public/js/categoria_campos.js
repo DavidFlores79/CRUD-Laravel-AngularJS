@@ -4,6 +4,7 @@ var app = angular.module('categoria_campos', []);
 app.controller('categoria_campos', function ($scope, $http) {
     $scope.categoria_campo = {};
     $scope.categoria_campos = [];
+    $scope.tablas = [];
     $scope.createForm = {};
     
     $http({
@@ -17,6 +18,7 @@ app.controller('categoria_campos', function ($scope, $http) {
         function successCallback(response) {
             console.log(response);
             $scope.categoria_campos = response.data.categoria_campos;
+            $scope.tablas = response.data.tablas;
             console.log($scope.categoria_campos);
         },
         function errorCallback(response) {

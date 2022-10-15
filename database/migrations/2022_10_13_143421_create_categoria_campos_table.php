@@ -16,6 +16,7 @@ class CreateCategoriaCamposTable extends Migration
         Schema::create('categoria_campos', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
+            $table->string('tabla');
             $table->boolean('visible')->default(1);
             $table->boolean('estatus')->default(1);
             $table->timestamps();

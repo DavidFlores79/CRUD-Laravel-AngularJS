@@ -6,6 +6,7 @@ use App\Models\Campo;
 use App\Models\CategoriaCampo;
 use App\Models\TipoCampo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class CampoController extends Controller
 {
@@ -17,6 +18,7 @@ class CampoController extends Controller
 
     function getCampos()
     {
+        //return Schema::getColumnListing('users');
         // return "Hola mundo!";
         $campos_formularios = Campo::with('categoria','tipo_campo')->get();
         $formularios = CategoriaCampo::all();

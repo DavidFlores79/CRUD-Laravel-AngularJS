@@ -23,19 +23,6 @@ class HomeController extends Controller
 
     function getUsuarios()
     {
-        // $campos = DB::table('categoria_campos')
-        //     ->join('campos', 'categoria_campos.id', '=', 'campos.categoria_id')
-        //     ->join('tipo_campos', 'tipo_campos.id', '=', 'campos.tipo_campo_id')
-        //     ->select('categoria_campos.*', 'campos.*', 'tipo_campos.*')
-        //     ->where('categoria_campos.nombre', '=', 'usuarios')
-        //     ->get();
-
-        // $campos = Campo::join('tipo_campos', 'tipo_campos.id', '=', 'campos.tipo_campo_id')
-        //     ->join('categoria_campos', 'categoria_campos.id', '=', 'campos.categoria_id')
-        //     ->where('categoria_campos.nombre', '=', 'usuarios')->get();   
-            
-        // $campos = $campos->load('categoria', 'tipo_campo');
-
         $users = User::all();
         
         if(is_object($users)){
@@ -81,8 +68,8 @@ class HomeController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email|min:3',
             'password' => 'required|string|min:8', // |confirmed
-            'direccion' => 'string|max:255',
-            'edad' => 'integer|max:255',
+            'direccion' => 'string|nullable|max:255',
+            'edad' => 'integer|nullable|max:255',
         ];
         $this->validate($request, $rules);
 
@@ -141,11 +128,10 @@ class HomeController extends Controller
         $rules = [
             'name' => 'required|string|max:255',
             'id' => 'required|exists:users,id',
-            //'usuario_nickname' => 'required|string|min:1|unique:users,nickname,'.$user->id,
-            'email' => 'required|string|email|max:255|min:3',
-            'password' => 'string|min:8', // |confirmed
-            'direccion' => 'string|max:255',
-            'edad' => 'integer|max:255',
+            'email' => 'required|string|min:3|unique:users,email,'.$request->input('id'),
+            'password' => 'string|nullable|min:8', // |confirmed
+            'direccion' => 'string|nullable|max:255',
+            'edad' => 'integer|nullable|max:255',
         ];
         $this->validate($request, $rules);
 
@@ -157,8 +143,8 @@ class HomeController extends Controller
             
                 $user->name = $request->input('name');
                 $user->email = $request->input('email');
-                if($request->input('direccion')) $user->direccion = $request->input('direccion');
-                if($request->input('edad')) $user->edad = $request->input('edad');
+                $user->direccion = $request->input('direccion');
+                $user->edad = $request->input('edad');
                 $user->save();
                 
                 $data = [

@@ -21,6 +21,7 @@
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Nombre</th>
+                                    <th scope="col">Tabla</th>
                                     <th scope="col">Fecha Creación</th>
                                     <th scope="col">Opciones</th>
                                 </tr>
@@ -29,6 +30,7 @@
                                 <tr ng-repeat="categoria_campo in categoria_campos track by $index">
                                     <td>@{{ categoria_campo.id }}</td>
                                     <td>@{{ categoria_campo.nombre }}</td>
+                                    <td>@{{ categoria_campo.tabla }}</td>
                                     <td>@{{ categoria_campo.created_at | date }}</td>
                                     <td>
                                         <button type="button" class="btn btn-sm btn-primary" ng-click="edit(categoria_campo)"><i class="fas fa-edit"></i></button>
@@ -58,9 +60,18 @@
             <div class="modal-body">
                 <form id="createForm" ng-submit="store()" class="was-validated">
                     <div class="form-group">
-                        <label for="nombre">Nombre:</label>
-                        <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre" ng-model="createForm.nombre" required autofocus>
+                        <label for="nombre">Formulario:</label>
+                        <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre del Formulario" ng-model="createForm.nombre" required autofocus>
                     </div>
+                    <!-- <div class="form-group">
+                        <label for="tabla">Tabla de BD:</label>
+                        <input type="text" name="tabla" id="tabla" class="form-control" placeholder="Tabla de la BD" ng-model="createForm.tabla" required autofocus>
+                    </div> -->
+                    <select class="form-control" id="edit-categoria_id" name="edit-categoria_id" ng-model="createForm.tabla">
+                        <option value="">Elige una opcion...</option>
+                        <option ng-repeat="tabla in tablas" value="@{{ tabla }}">
+                            @{{ tabla }}</option>
+                    </select>
                     <div class="form-group">
                         <button type="submit" class="btn btn-sm btn-primary">Guardar</button>
                     </div>

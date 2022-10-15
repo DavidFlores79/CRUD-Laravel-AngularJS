@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\CategoriaCampo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class CategoriaCampoController extends Controller
 {
-    //
-        public function index()
-    {
+    public function index()
+    {        
         return view('admin.categoria-campos.index');
     }
 
@@ -17,12 +18,14 @@ class CategoriaCampoController extends Controller
     {
         // return "Hola mundo!";
         $categoria_campos = CategoriaCampo::all();
-        
+        $tablas = array_map('reset', DB::select('SHOW TABLES'));
+
         if(is_object($categoria_campos)){
             $data = [
                 'code' => 200,
                 'status' => 'success',
                 'categoria_campos' => $categoria_campos,
+                'tablas' => $tablas,
             ];
         } else {
             $data = [
