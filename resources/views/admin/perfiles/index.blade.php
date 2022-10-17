@@ -1,8 +1,8 @@
 @extends('layouts.main')
 
-@section('page-title', 'Usuarios')
-@section('ngApp', 'home')
-@section('ngController', 'home')
+@section('page-title', 'Perfiles')
+@section('ngApp', 'perfiles')
+@section('ngController', 'perfiles')
 
 @section('content')
 <div class="container">
@@ -21,7 +21,6 @@
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Nombre</th>
-                                    <th scope="col">Email</th>
                                     <th scope="col">Fecha Creación</th>
                                     <th scope="col">Opciones</th>
                                 </tr>
@@ -29,12 +28,11 @@
                             <tbody>
                                 <tr ng-repeat="dato in datos track by $index">
                                     <td>@{{ dato.id }}</td>
-                                    <td>@{{ dato.name }}</td>
-                                    <td>@{{ dato.email }}</td>
+                                    <td>@{{ dato.nombre }}</td>
                                     <td>@{{ dato.created_at | date }}</td>
                                     <td>
                                         <button type="button" class="btn btn-sm btn-primary" ng-click="edit(dato)"><i class="fas fa-edit"></i></button>
-                                        <button type="button" class="btn btn-sm btn-danger" ng-click="confirmarEliminar(dato)" ng-if="dato.id != {{ auth()->user()->id }}"><i class="fas fa-trash"></i></button>
+                                        <button type="button" class="btn btn-sm btn-danger" ng-click="confirmarEliminar(dato)"><i class="fas fa-trash"></i></button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -122,17 +120,17 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="eliminarModalLabel">Crear Usuario</h5>
+                <h5 class="modal-title" id="eliminarModalLabel">Crear Perfil</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                ¿Realmente desea eliminar al usuario <span class="font-weight-bold" id="nombre-usuario"></span>?
+                ¿Realmente desea eliminar al perfil <span class="font-weight-bold" id="nombre-perfil"></span>?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger" ng-click="delete(usuario)">Eliminar</button>
+                <button type="button" class="btn btn-danger" ng-click="delete(dato)">Eliminar</button>
             </div>
         </div>
     </div>
@@ -142,6 +140,6 @@
 @endsection
 
 @section('ngFile')
-<script src="{{ asset('js/home.js') }}"></script>
+<script src="{{ asset('js/perfiles.js') }}"></script>
 
 @endsection

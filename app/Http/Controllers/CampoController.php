@@ -52,11 +52,11 @@ class CampoController extends Controller
     }
 
     public function store(Request $request) 
-    {
+    {   //return $request;
         $rules = [
             'nombre' => 'required|string|max:255',
             'etiqueta' => 'required|string|max:255',
-            'formulario' => 'required|string|max:255',
+            'formulario.id' => 'required|exists:tipo_formularios,id',
             'tipo_campo' => 'required|string|exists:tipo_campos,nombre|max:255',
             'requerido' => 'boolean',
             'sololectura' => 'boolean',
@@ -69,7 +69,7 @@ class CampoController extends Controller
             $campos_formulario = new Campo();
             $campos_formulario->nombre = $request->input('nombre');
             $campos_formulario->etiqueta = $request->input('etiqueta');
-            $campos_formulario->tipo_formulario_id = $request->input('formulario');
+            $campos_formulario->tipo_formulario_id = $request->input('formulario.id');
             $campos_formulario->tipo_campo_id = TipoCampo::where('nombre', $request->input('tipo_campo'))->pluck('id')->firstOrFail();
             ($request->input('requerido')) ? $campos_formulario->requerido = true : $campos_formulario->requerido = false;
             ($request->input('sololectura')) ? $campos_formulario->sololectura = true : $campos_formulario->sololectura = false;

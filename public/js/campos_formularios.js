@@ -230,6 +230,38 @@ app.controller('campos_formularios', function ($scope, $http) {
     $('#editarUsuarioModal').on('hidden.bs.modal', function () {
         console.log('haz algo');
     });
+
+    $scope.camposTabla = function () {
+
+        if($scope.createForm.formulario.tabla) {
+            $scope.nombre_campos = {};
+            return;
+        }
+        $http({
+            url: 'get-campos-tabla',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            data: {
+                'tabla': $scope.createForm.formulario.tabla
+            }
+        }).then(
+            function successCallback(response) {
+                console.log(response);
+                $scope.nombre_campos = response.data;
+            },
+            function errorCallback(response) {
+                console.log(response);
+                swal(
+                    configuraciones.titulo,
+                    response.data.message,
+                    tiposDeMensaje.error
+                );
+            }
+        );
+    }
     
 
 

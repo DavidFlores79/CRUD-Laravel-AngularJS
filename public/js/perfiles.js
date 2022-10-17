@@ -1,7 +1,7 @@
-var app = angular.module('home', []);
+var app = angular.module('perfiles', []);
 
 
-app.controller('home', function ($scope, $http) {
+app.controller('perfiles', function ($scope, $http) {
     $scope.createForm = {};
     $scope.formulario_crear = [];
     $scope.formulario_editar = [];
@@ -9,7 +9,7 @@ app.controller('home', function ($scope, $http) {
     $scope.datos = [];
     
     $http({
-        url: 'get-usuarios',
+        url: 'get-perfiles',
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -18,7 +18,7 @@ app.controller('home', function ($scope, $http) {
     }).then(
         function successCallback(response) {
             console.log('index', response);
-            $scope.datos = response.data.users;
+            $scope.datos = response.data.datos;
             console.log($scope.datos);
         },
         function errorCallback(response) {
@@ -42,10 +42,10 @@ app.controller('home', function ($scope, $http) {
     $scope.create = function () {
 
         $http({
-            url: 'usuarios/create',
+            url: 'perfiles/create',
             method: 'POST',
             data: {
-                formulario_crear: 'usuarios_crear'
+                formulario_crear: 'perfiles_crear'
             },
             headers: {
                 'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ app.controller('home', function ($scope, $http) {
         // console.log('name:', $scope.createForm);
         // return;
         $http({
-            url: 'usuarios',
+            url: 'perfiles',
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ app.controller('home', function ($scope, $http) {
         }).then(
             function successCallback(response) {
                 console.log(response);
-                $scope.datos = [...$scope.datos, response.data.user];
+                $scope.datos = [...$scope.datos, response.data.dato];
                 $scope.createForm = {};
                 $('#createForm').trigger('reset');
                 $('#agregarModal').modal('hide');
@@ -125,19 +125,16 @@ app.controller('home', function ($scope, $http) {
         );
     }
 
-    $scope.edit = function (usuario) {
+    $scope.edit = function (dato) {
         $scope.editForm = {};
-        if(usuario.name) $scope.editForm['name'] = usuario.name;
-        if(usuario.email) $scope.editForm['email'] = usuario.email;
-        if(usuario.id) $scope.editForm['id'] = usuario.id;
-        if(usuario.direccion) $scope.editForm['direccion'] = usuario.direccion;
-        if(usuario.edad) $scope.editForm['edad'] = parseInt(usuario.edad);
+        if(dato.nombre) $scope.editForm['nombre'] = dato.nombre;
+        if(dato.id) $scope.editForm['id'] = dato.id;
 
         $http({
-            url: 'usuarios/edit',
+            url: 'perfiles/edit',
             method: 'POST',
             data: {
-                formulario_editar: 'usuarios_editar'
+                formulario_editar: 'perfiles_editar'
             },
             headers: {
                 'Content-Type': 'application/json',
@@ -171,7 +168,7 @@ app.controller('home', function ($scope, $http) {
     $scope.update = function () {
 
         $http({
-            url: `usuarios`,
+            url: `perfiles`,
             method: 'PUT',
             data: $scope.editForm,
             headers: {
@@ -181,8 +178,8 @@ app.controller('home', function ($scope, $http) {
         }).then(
             function successCallback(response) {
                 console.log('response: ', response);
-                $scope.dato = response.data.user;
-                $scope.datos = $scope.datos.map(usuario => (usuario.id == response.data.user.id) ? usuario = response.data.user : usuario);
+                $scope.dato = response.data.perfil;
+                $scope.datos = $scope.datos.map(dato => (dato.id == response.data.dato.id) ? dato = response.data.dato : dato);
                 $('#editarModal').modal('hide');
                 swal(
                     'Mensaje del Sistema',
@@ -209,17 +206,17 @@ app.controller('home', function ($scope, $http) {
         );
     }
 
-    $scope.confirmarEliminar = function (usuario) {
-        $scope.dato = usuario;
-        $('#nombre-usuario').html(usuario.name);
+    $scope.confirmarEliminar = function (dato) {
+        $scope.dato = dato;
+        $('#nombre-dato').html(dato.name);
         $('#eliminarModal').modal('show');
     }
 
     $scope.delete = function () {
-        console.log('usuario: ', $scope.dato);
+        console.log('perfil: ', $scope.dato);
 
         $http({
-            url: `usuarios/${$scope.dato.id}`,
+            url: `perfiles/${$scope.dato.id}`,
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -228,7 +225,7 @@ app.controller('home', function ($scope, $http) {
         }).then(
             function successCallback(response) {
                 console.log(response);
-                $scope.datos = $scope.datos.filter(usuario => usuario.id !== $scope.dato.id);
+                $scope.datos = $scope.datos.filter(dato => dato.id !== $scope.dato.id);
                 $('#eliminarModal').modal('hide');
                 swal(
                     'Mensaje del Sistema',

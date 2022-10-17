@@ -61,15 +61,18 @@
                 <form id="createForm" ng-submit="store()" class="was-validated">
                     <div class="form-group">
                         <label for="formulario">Formulario:</label>
-                        <select class="form-control" id="formulario" name="formulario" ng-model="createForm.formulario" required>
-                            <option value="">Elige una opcion...</option>
-                            <option ng-repeat="formulario in formularios" value="@{{ formulario.id }}">
-                                @{{ formulario.nombre }}</option>
-                        </select>
+                        <div class="form-group">
+                            <select class="form-control" id="formulario" name="formulario" ng-model="createForm.formulario" ng-options="formulario.nombre for formulario in formularios track by formulario.id" required ng-change="camposTabla()">
+                                <option value="">Elige una opcion...</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="nombre">Nombre:</label>
-                        <input type="text" name="nombre" id="nombre" class="form-control" placeholder="con minúsculas" ng-model="createForm.nombre" required autofocus>
+                        <!-- <input type="text" name="nombre" id="nombre" class="form-control" placeholder="con minúsculas" ng-model="createForm.nombre" required autofocus> -->
+                        <select class="form-control" name="nombre" id="nombre" ng-model="createForm.nombre" ng-options="nombre_campo for nombre_campo in nombre_campos" required ng-change="camposTabla()" ng-disabled="nombre_campo == 'undefined'">
+                            <option value="">Elige una opcion...</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="etiqueta">Etiqueta (label):</label>

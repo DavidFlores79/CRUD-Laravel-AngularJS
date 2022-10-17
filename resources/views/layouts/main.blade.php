@@ -32,7 +32,20 @@
             <li class="nav-item active">
                 <a class="nav-link" href="{{ url('home') }}">Usuarios <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ url('perfiles') }}">Perfiles</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                Formularios
+                </a>
+                <div class="dropdown-menu">
+                <a class="dropdown-item" href="{{ url('tipoformularios') }}">Tipos de Formularios</a>
+                <a class="dropdown-item" href="{{ url('tipos-de-campos') }}">Tipo de Campos</a>
+                <a class="dropdown-item" href="{{ url('campos-para-formularios') }}">Crear Formularios</a>
+                </div>
+            </li>
+            <!-- <li class="nav-item">
                 <a class="nav-link" href="{{ url('tipoformularios') }}">Tipos de Formularios</a>
             </li>
             <li class="nav-item">
@@ -40,7 +53,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ url('campos-para-formularios') }}">Crear Formularios</a>
-            </li>
+            </li> -->
             </ul>
             <ul class="navbar-nav mx-auto">
 

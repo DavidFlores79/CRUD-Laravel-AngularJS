@@ -24,7 +24,7 @@ Route::middleware(['auth'])->group(function () {
     
     //usuarios
     Route::get('home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-    //Route::get('usuarios', [App\Http\Controllers\HomeController::class, 'getUsuarios']);
+    //Route::get('usuarios', [App\Http\Controllers\HomeController::class, 'index']);
     Route::get('get-usuarios', [App\Http\Controllers\HomeController::class, 'getUsuarios']);
     Route::post('usuarios/create', [App\Http\Controllers\HomeController::class, 'create']);
     Route::post('usuarios/edit', [App\Http\Controllers\HomeController::class, 'edit']);
@@ -32,6 +32,17 @@ Route::middleware(['auth'])->group(function () {
     Route::put('usuarios', [App\Http\Controllers\HomeController::class, 'update']);
     
     Route::delete("usuarios/{id}", [App\Http\Controllers\HomeController::class, "destroy"]);
+    
+    //perfiles
+    Route::get('perfiles', [App\Http\Controllers\PerfilController::class, 'index']);
+    Route::get('get-perfiles', [App\Http\Controllers\PerfilController::class, 'getPerfiles']);
+    Route::post('perfiles/create', [App\Http\Controllers\PerfilController::class, 'create']);
+    Route::post('perfiles/edit', [App\Http\Controllers\PerfilController::class, 'edit']);
+    Route::post('perfiles', [App\Http\Controllers\PerfilController::class, 'store']);
+    Route::put('perfiles', [App\Http\Controllers\PerfilController::class, 'update']);
+    Route::delete("perfiles/{id}", [App\Http\Controllers\PerfilController::class, "destroy"]);
+
+    Route::post('get-campos-tabla', [App\Http\Controllers\PerfilController::class, 'getCamposTabla']);
     
     //categoria campos
     // Route::get('categorias-de-campos', [App\Http\Controllers\CategoriaCampoController::class, 'index']);
