@@ -1,14 +1,14 @@
-var app = angular.module('categoria_campos', []);
+var app = angular.module('tipo_formularios', []);
 
-
-app.controller('categoria_campos', function ($scope, $http) {
-    $scope.categoria_campo = {};
-    $scope.categoria_campos = [];
+app.controller('tipo_formularios', function ($scope, $http) {
+    $scope.tipo_formulario = {};
+    $scope.tipo_formularios = [];
     $scope.tablas = [];
     $scope.createForm = {};
+    $scope.editForm = {};
     
     $http({
-        url: 'categoria_campos',
+        url: 'tipoformularios/gettipoformularios',
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -17,24 +17,32 @@ app.controller('categoria_campos', function ($scope, $http) {
     }).then(
         function successCallback(response) {
             console.log(response);
-            $scope.categoria_campos = response.data.categoria_campos;
+            $scope.tipo_formularios = response.data.tipo_formularios;
             $scope.tablas = response.data.tablas;
-            console.log($scope.categoria_campos);
+            console.log($scope.tipo_formularios);
         },
         function errorCallback(response) {
             console.log(response);
-            swal(
-                configuraciones.titulo,
-                response.data.message,
-                tiposDeMensaje.error
-            );
+            if (response.status === 422) {
+                let mensaje = '';
+                for (let i in response.data.errors) {
+                    mensaje += response.data.errors[i] + '\n';
+                }
+                swal('Mensaje del Sistema', mensaje, 'error');
+            } else {
+                swal(
+                    'Mensaje del Sistema',
+                    response.data.message,
+                    response.data.status
+                );
+            }
         }
     );
 
     $scope.create = function () {
 
         $http({
-            url: 'categoria_campos/create',
+            url: 'tipoformularios/create',
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -44,15 +52,23 @@ app.controller('categoria_campos', function ($scope, $http) {
             function successCallback(response) {
                 console.log(response);
                 $('#createForm').trigger('reset');
-                $('#agregarCategoriaCampoModal').modal('show');
+                $('#agregarModal').modal('show');
             },
             function errorCallback(response) {
                 console.log(response);
-                swal(
-                    'Mensaje del Sistema',
-                    response.data.message,
-                    response.data.status
-                );
+                if (response.status === 422) {
+                    let mensaje = '';
+                    for (let i in response.data.errors) {
+                        mensaje += response.data.errors[i] + '\n';
+                    }
+                    swal('Mensaje del Sistema', mensaje, 'error');
+                } else {
+                    swal(
+                        'Mensaje del Sistema',
+                        response.data.message,
+                        response.data.status
+                    );
+                }
             }
         );
     }
@@ -60,7 +76,7 @@ app.controller('categoria_campos', function ($scope, $http) {
     $scope.store = function () {
 
         $http({
-            url: 'categoria_campos',
+            url: 'tipoformularios',
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -70,9 +86,9 @@ app.controller('categoria_campos', function ($scope, $http) {
         }).then(
             function successCallback(response) {
                 console.log(response);
-                $scope.categoria_campos = [...$scope.categoria_campos, response.data.categoria_campo];
+                $scope.tipo_formularios = [...$scope.tipo_formularios, response.data.tipo_formulario];
                 $('#createForm').trigger('reset');
-                $('#agregarCategoriaCampoModal').modal('hide');
+                $('#agregarModal').modal('hide');
                 swal(
                     'Mensaje del Sistema',
                     response.data.message,
@@ -81,7 +97,7 @@ app.controller('categoria_campos', function ($scope, $http) {
             },
             function errorCallback(response) {
                 console.log(response);
-                //$('#agregarCategoriaCampoModal').modal('hide');
+                //$('#agregarModal').modal('hide');
                 
                 if (response.status === 422) {
                     let mensaje = '';
@@ -101,13 +117,15 @@ app.controller('categoria_campos', function ($scope, $http) {
         );
     }
 
-    $scope.edit = function (categoria_campo) {
-        console.log('cat: ', categoria_campo);
-        $('#edit-nombre').val(categoria_campo.nombre);
-        $('#edit-id').val(categoria_campo.id);
+    $scope.edit = function (tipo_formulario) {
+        $scope.editForm = tipo_formulario;
+        console.log('categoria: ', $scope.editForm);
+        // $('#edit-nombre').val(tipo_formulario.nombre);
+        // $("#edit-tabla option[value='perfiles']").prop('selected', true);
+        // $('#edit-id').val(tipo_formulario.id);
         
         $http({
-            url: 'categoria_campos/edit',
+            url: 'tipoformularios/edit',
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -116,29 +134,37 @@ app.controller('categoria_campos', function ($scope, $http) {
         }).then(
             function successCallback(response) {
                 console.log(response);
-                $('#editarCategoriaCampoModal').modal('show');
+                $('#editarModal').modal('show');
             },
             function errorCallback(response) {
                 console.log(response);
-                swal(
-                    'Mensaje del Sistema',
-                    response.data.message,
-                    response.data.status
-                );
+                if (response.status === 422) {
+                    let mensaje = '';
+                    for (let i in response.data.errors) {
+                        mensaje += response.data.errors[i] + '\n';
+                    }
+                    swal('Mensaje del Sistema', mensaje, 'error');
+                } else {
+                    swal(
+                        'Mensaje del Sistema',
+                        response.data.message,
+                        response.data.status
+                    );
+                }
             }
         );
     }
 
     $scope.update = function () {
-        let categoria_campo_editado = {
+        let tipo_formulario_editado = {
             id: $('#edit-id').val(),
             nombre: $('#edit-nombre').val(),
         };
 
         $http({
-            url: `categoria_campos`,
+            url: `tipoformularios`,
             method: 'PUT',
-            data: categoria_campo_editado,
+            data: $scope.editForm,
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -146,9 +172,9 @@ app.controller('categoria_campos', function ($scope, $http) {
         }).then(
             function successCallback(response) {
                 console.log('response: ', response);
-                $scope.categoria_campo = response.data.categoria_campo;
-                $scope.categoria_campos = $scope.categoria_campos.map(categoria_campo => (categoria_campo.id == response.data.categoria_campo.id) ? categoria_campo = response.data.categoria_campo : categoria_campo);
-                $('#editarCategoriaCampoModal').modal('hide');
+                $scope.tipo_formulario = response.data.tipo_formulario;
+                $scope.tipo_formularios = $scope.tipo_formularios.map(tipo_formulario => (tipo_formulario.id == response.data.tipo_formulario.id) ? tipo_formulario = response.data.tipo_formulario : tipo_formulario);
+                $('#editarModal').modal('hide');
                 swal(
                     'Mensaje del Sistema',
                     response.data.message,
@@ -174,17 +200,17 @@ app.controller('categoria_campos', function ($scope, $http) {
         );
     }
 
-    $scope.confirmarEliminar = function (categoria_campo) {
-        $scope.categoria_campo = categoria_campo;
-        $('#nombre-categoria_campo').html(categoria_campo.nombre);
-        $('#eliminarCategoriaCampoModal').modal('show');
+    $scope.confirmarEliminar = function (tipo_formulario) {
+        $scope.tipo_formulario = tipo_formulario;
+        $('#nombre-tipo_formulario').html(tipo_formulario.nombre);
+        $('#eliminarModal').modal('show');
     }
 
     $scope.delete = function () {
-        console.log('categoria_campo: ', $scope.categoria_campo);
+        console.log('tipo_formulario: ', $scope.tipo_formulario);
 
         $http({
-            url: `categoria_campos/${$scope.categoria_campo.id}`,
+            url: `tipoformularios/${$scope.tipo_formulario.id}`,
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -193,8 +219,8 @@ app.controller('categoria_campos', function ($scope, $http) {
         }).then(
             function successCallback(response) {
                 console.log(response);
-                $scope.categoria_campos = $scope.categoria_campos.filter(categoria_campo => categoria_campo.id !== $scope.categoria_campo.id);
-                $('#eliminarCategoriaCampoModal').modal('hide');
+                $scope.tipo_formularios = $scope.tipo_formularios.filter(tipo_formulario => tipo_formulario.id !== $scope.tipo_formulario.id);
+                $('#eliminarModal').modal('hide');
                 swal(
                     'Mensaje del Sistema',
                     response.data.message,
@@ -213,7 +239,7 @@ app.controller('categoria_campos', function ($scope, $http) {
         
     }
 
-    $('#editarUsuarioModal').on('hidden.bs.modal', function () {
+    $('#editarModal').on('hidden.bs.modal', function () {
         console.log('haz algo');
     });
     

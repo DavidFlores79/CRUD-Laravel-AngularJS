@@ -2,29 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CategoriaCampo;
+use App\Models\TipoFormulario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
-class CategoriaCampoController extends Controller
+class TipoFormularioController extends Controller
 {
     public function index()
     {        
-        return view('admin.categoria-campos.index');
+        return view('admin.tipo_formularios.index');
     }
 
-    function getCategoriaCampos()
+    function getTipoFormularios()
     {
-        // return "Hola mundo!";
-        $categoria_campos = CategoriaCampo::all();
-        $tablas = array_map('reset', DB::select('SHOW TABLES'));
+        $tipo_formularios = TipoFormulario::all();
+        $tablas = $this->getTablas();
 
-        if(is_object($categoria_campos)){
+        if(is_object($tipo_formularios)){
             $data = [
                 'code' => 200,
                 'status' => 'success',
-                'categoria_campos' => $categoria_campos,
+                'tipo_formularios' => $tipo_formularios,
                 'tablas' => $tablas,
             ];
         } else {
@@ -47,23 +45,25 @@ class CategoriaCampoController extends Controller
     }
 
     public function store(Request $request) 
-    {
+    {   
         $rules = [
             'nombre' => 'required|string|max:255',
+            'tabla' => 'required|string|max:255',
         ];
         $this->validate($request, $rules);
 
         try {
-            $categoria_campo = new CategoriaCampo();
-            $categoria_campo->nombre = $request->input('nombre');
-            $categoria_campo->save();
+            $tipo_formulario = new TipoFormulario();
+            $tipo_formulario->nombre = $request->input('nombre');
+            $tipo_formulario->tabla = $request->input('tabla');
+            $tipo_formulario->save();
     
-            if(is_object($categoria_campo)) {
+            if(is_object($tipo_formulario)) {
                 $data = [
                     'code' => 200,
                     'status' => 'success',
                     'message' => 'Usuario creado satisfactoriamente',
-                    'categoria_campo' => $categoria_campo,
+                    'tipo_formulario' => $tipo_formulario,
                 ];
             }
             return response()->json($data, $data['code']);
@@ -80,9 +80,12 @@ class CategoriaCampoController extends Controller
 
     public function edit()
     {
+        $tablas = $this->getTablas();
+
         $data = [
             'code' => 200,
             'status' => 'success',
+            'tablas' => $tablas,
         ];
         return response()->json($data, $data['code']);
     }
@@ -91,20 +94,28 @@ class CategoriaCampoController extends Controller
     {
         //return $request;
         //falta validar request
+        $rules = [
+            'id' => 'required|exists:tipo_formularios,id',
+            'nombre' => 'required|string|max:255',
+            'tabla' => 'required|string|max:255',
+        ];
+        $this->validate($request, $rules);
+
         if($request->input('id'))
-            $categoria_campo = CategoriaCampo::where('id',$request->input('id'))->first();
+            $tipo_formulario = TipoFormulario::where('id',$request->input('id'))->first();
 
         try {
-            if(is_object($categoria_campo)) {
+            if(is_object($tipo_formulario)) {
             
-                $categoria_campo->nombre = $request->input('nombre');
-                $categoria_campo->save();
+                $tipo_formulario->nombre = $request->input('nombre');
+                $tipo_formulario->tabla = $request->input('tabla');
+                $tipo_formulario->save();
                 
                 $data = [
                     'code' => 200,
                     'status' => 'success',
                     'message' => 'Categoría editada.',
-                    'categoria_campo' => $categoria_campo,
+                    'tipo_formulario' => $tipo_formulario,
                 ];
 
                 return response()->json($data, $data['code']);
@@ -123,15 +134,15 @@ class CategoriaCampoController extends Controller
 
     public function destroy($id)
     {
-        $categoria_campo = CategoriaCampo::where('id',$id)->first();
+        $tipo_formulario = TipoFormulario::where('id',$id)->first();
 
-        if(is_object($categoria_campo)) {
-            $categoria_campo->delete();
+        if(is_object($tipo_formulario)) {
+            $tipo_formulario->delete();
             $data = [
                 'code' => 200,
                 'status' => 'success',
                 'message' => 'Categoría eliminada satisfactoriamente',
-                'categoria_campo' => $categoria_campo,
+                'tipo_formulario' => $tipo_formulario,
             ];
         } else {
             $data = [
@@ -141,5 +152,10 @@ class CategoriaCampoController extends Controller
             ];
         }
         return response()->json($data, $data['code']);
+    }
+
+    public function getTablas() {
+        $all_tablas = array_map('reset', DB::select('SHOW TABLES'));
+        return array_filter(array_map(function($n) { if(($n != 'migrations') && ($n != 'failed_jobs') && ($n != 'password_resets')) return $n; }, $all_tablas));
     }
 }

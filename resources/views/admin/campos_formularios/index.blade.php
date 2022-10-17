@@ -29,7 +29,7 @@
                             <tbody>
                                 <tr ng-repeat="campos_formulario in campos_formularios track by $index">
                                     <td>@{{ campos_formulario.id }}</td>
-                                    <td>@{{ campos_formulario.categoria.nombre }}</td>
+                                    <td>@{{ campos_formulario.tipo_formulario.nombre }}</td>
                                     <td>@{{ campos_formulario.tipo_campo.nombre }}</td>
                                     <td>@{{ campos_formulario.nombre }}</td>
                                     <td>
@@ -48,11 +48,11 @@
 
 
 <!-- Modal Crear campos_formulario -->
-<div class="modal fade" id="agregarCamposFormulariosModal" tabindex="-1" aria-labelledby="agregarCamposFormulariosModalLabel" aria-hidden="true">
+<div class="modal fade" id="agregarModal" tabindex="-1" aria-labelledby="agregarModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="agregarCamposFormulariosModalLabel">Crear campos_formulario</h5>
+                <h5 class="modal-title" id="agregarModalLabel">Crear campos_formulario</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -115,11 +115,11 @@
 </div>
 
 <!-- Modal Editar campos_formulario -->
-<div class="modal fade" id="editarCamposFormulariosModal" tabindex="-1" aria-labelledby="editarCamposFormulariosModalLabel" aria-hidden="true">
+<div class="modal fade" id="editarModal" tabindex="-1" aria-labelledby="editarModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editarCamposFormulariosModalLabel">Editar Campo</h5>
+                <h5 class="modal-title" id="editarModalLabel">Editar Campo</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -128,8 +128,8 @@
                 <form ng-submit="update()" class="was-validated">
                     <input type="hidden" name="id" id="edit-id">
                     <div class="form-group">
-                        <label for="edit-categoria_id">Formulario:</label>
-                        <select class="form-control" id="edit-categoria_id" name="edit-categoria_id" ng-model="editForm.formulario">
+                        <label for="edit-tipo_formulario_id">Formulario:</label>
+                        <select class="form-control" id="edit-tipo_formulario_id" name="edit-tipo_formulario_id" ng-model="editForm.formulario">
                             <option value="">Elige una opcion...</option>
                             <option ng-repeat="formulario in formularios" value="@{{ formulario.id }}">
                                 @{{ formulario.nombre }}</option>
@@ -144,12 +144,34 @@
                         <input type="text" name="edit-etiqueta" id="edit-etiqueta" class="form-control" placeholder="Etiqueta (label)" ng-model="editForm.etiqueta" autofocus>
                     </div>
                     <div class="form-group">
-                        <label for="edit-tipo_campo_id">Tipos de Campo:</label>
-                        <select class="form-control" id="edit-tipo_campo_id" name="edit-tipo_campo_id" ng-model="editForm.tipo_campo_id">
+                        <label for="tipo_campo">Tipos de Campo:</label>
+                        <select class="form-control" id="edit-tipo_campo" name="edit-tipo_campo" ng-model="editForm.tipo_campo" required>
                             <option value="">Elige una opcion...</option>
-                            <option ng-repeat="tipo_campo in tipos_campo" value="@{{ tipo_campo.id }}">
+                            <option ng-repeat="tipo_campo in tipos_campo" value="@{{ tipo_campo.nombre }}">
                                 @{{ tipo_campo.nombre }}</option>
                         </select>
+                    </div>
+                    <div class="form-group" ng-if="editForm.tipo_campo == 'text' || editForm.tipo_campo == 'password'" >
+                        <label for="minlength">Tamaño mínimo (minlength)</label>
+                        <input type="number" name="edit-minlength" min="0" step="1" id="edit-minlength" class="form-control" placeholder="Tamaño mínimo" ng-model="editForm.minlength" required autofocus>
+                    </div>
+                    <div class="form-group" ng-if="editForm.tipo_campo == 'number'">
+                        <label for="min">Tamaño mínimo (min)</label>
+                        <input type="number" name="edit-min" min="0" step="1" id="edit-min" class="form-control" placeholder="Tamaño mínimo" ng-model="editForm.min" required autofocus>
+                    </div>
+                    <div class="form-group custom-control custom-switch custom-switch-lg">
+                        <input type="checkbox" class="custom-control-input form-control" id="edit-requerido" name="edit-requerido" ng-model="editForm.requerido">
+                        <input type="hidden" id="input-requerido">
+                        <label class="custom-control-label" for="edit-requerido">
+                            Requerido
+                        </label>
+                    </div>
+                    <div class="form-group custom-control custom-switch custom-switch-lg">
+                        <input type="checkbox" class="custom-control-input form-control" id="edit-sololectura" name="edit-sololectura" ng-model="editForm.sololectura">
+                        <input type="hidden" id="input-sololectura">
+                        <label class="custom-control-label" for="edit-sololectura">
+                            Solo Lectura
+                        </label>
                     </div>
                     <div class="form-group">
                         <button type="submit" class="btn btn-sm btn-primary">Guardar</button>
@@ -161,11 +183,11 @@
 </div>
 
 <!-- Modal Eliminar campos_formulario-->
-<div class="modal fade" id="eliminarCamposFormulariosModal" tabindex="-1" aria-labelledby="eliminarCamposFormulariosModalLabel" aria-hidden="true">
+<div class="modal fade" id="eliminarModal" tabindex="-1" aria-labelledby="eliminarModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="eliminarCamposFormulariosModalLabel">Crear campos_formulario</h5>
+                <h5 class="modal-title" id="eliminarModalLabel">Crear campos_formulario</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\CategoriaCampo;
+use App\Models\TipoFormulario;
 use Illuminate\Database\Seeder;
 
-class CategoriaCampoSeeder extends Seeder
+class TipoFormularioSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,19 +14,19 @@ class CategoriaCampoSeeder extends Seeder
      */
     public function run()
     {
-        CategoriaCampo::create([
+        TipoFormulario::create([
             'nombre' => 'usuarios_crear',
             'tabla' => 'users',
         ]);
-        CategoriaCampo::create([
+        TipoFormulario::create([
             'nombre' => 'usuarios_editar',
             'tabla' => 'users',
         ]);
-        CategoriaCampo::create([
+        TipoFormulario::create([
             'nombre' => 'perfiles_crear',
             'tabla' => 'perfiles',
         ]);
-        CategoriaCampo::create([
+        TipoFormulario::create([
             'nombre' => 'perfiles_editar',
             'tabla' => 'perfiles',
         ]);

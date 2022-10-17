@@ -33,7 +33,7 @@
                 <a class="nav-link" href="{{ url('home') }}">Usuarios <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ url('categorias-de-campos') }}">Tipos de Formularios</a>
+                <a class="nav-link" href="{{ url('tipoformularios') }}">Tipos de Formularios</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ url('tipos-de-campos') }}">Tipo de Campos</a>

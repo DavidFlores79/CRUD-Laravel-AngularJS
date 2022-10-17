@@ -18,7 +18,7 @@ class CreateCamposTable extends Migration
             $table->string('nombre');
             $table->string('etiqueta')->nullable();
             $table->string('descripcion')->nullable();
-            $table->bigInteger('categoria_id')->unsigned();
+            $table->bigInteger('tipo_formulario_id')->unsigned();
             $table->bigInteger('tipo_campo_id')->unsigned();
             
             $table->boolean('requerido')->default(0);
@@ -34,7 +34,7 @@ class CreateCamposTable extends Migration
         });
 
         Schema::table('campos', function($table) {
-            $table->foreign('categoria_id')->references('id')->on('categoria_campos')->onDelete('cascade');
+            $table->foreign('tipo_formulario_id')->references('id')->on('tipo_formularios')->onDelete('cascade');
         });
         Schema::table('campos', function($table) {
             $table->foreign('tipo_campo_id')->references('id')->on('tipo_campos')->onDelete('cascade');

@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Campo;
-use App\Models\CategoriaCampo;
+use App\Models\TipoFormulario;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
@@ -45,12 +44,12 @@ class HomeController extends Controller
     {
         //validar el request
         $rules = [
-            'formulario_crear' => 'required|string|exists:categoria_campos,nombre',
+            'formulario_crear' => 'required|string|exists:tipo_formularios,nombre',
         ];
         $this->validate($request, $rules);
         
-        $campos = Campo::where('categoria_id', CategoriaCampo::where('nombre', $request->input('formulario_crear'))->pluck('id')->first())->get();
-        $campos = $campos->load('categoria', 'tipo_campo');
+        $campos = Campo::where('tipo_formulario_id', TipoFormulario::where('nombre', $request->input('formulario_crear'))->pluck('id')->first())->get();
+        $campos = $campos->load('tipo_formulario', 'tipo_campo');
 
         $data = [
             'code' => 200,
@@ -106,12 +105,12 @@ class HomeController extends Controller
     {
         //validar el request
         $rules = [
-            'formulario_editar' => 'required|string|exists:categoria_campos,nombre',
+            'formulario_editar' => 'required|string|exists:tipo_formularios,nombre',
         ];
         $this->validate($request, $rules);
 
-        $campos = Campo::where('categoria_id', CategoriaCampo::where('nombre', $request->input('formulario_editar'))->pluck('id')->first())->get();
-        $campos = $campos->load('categoria', 'tipo_campo');
+        $campos = Campo::where('tipo_formulario_id', TipoFormulario::where('nombre', $request->input('formulario_editar'))->pluck('id')->first())->get();
+        $campos = $campos->load('tipo_formulario', 'tipo_campo');
 
         $data = [
             'code' => 200,

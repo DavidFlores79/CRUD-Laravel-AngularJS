@@ -15,6 +15,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(UsersTableSeeder::class);
         $this->call(TipoCampoSeeder::class);
-        $this->call(CategoriaCampoSeeder::class);
+        $this->call(TipoFormularioSeeder::class);
     }
 }

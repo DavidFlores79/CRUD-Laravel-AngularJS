@@ -34,14 +34,24 @@ Route::middleware(['auth'])->group(function () {
     Route::delete("usuarios/{id}", [App\Http\Controllers\HomeController::class, "destroy"]);
     
     //categoria campos
-    Route::get('categorias-de-campos', [App\Http\Controllers\CategoriaCampoController::class, 'index']);
-    Route::get('categoria_campos', [App\Http\Controllers\CategoriaCampoController::class, 'getCategoriaCampos']);
-    Route::get('categoria_campos/create', [App\Http\Controllers\CategoriaCampoController::class, 'create']);
-    Route::get('categoria_campos/edit', [App\Http\Controllers\CategoriaCampoController::class, 'edit']);
-    Route::post('categoria_campos', [App\Http\Controllers\CategoriaCampoController::class, 'store']);
-    Route::put('categoria_campos', [App\Http\Controllers\CategoriaCampoController::class, 'update']);
+    // Route::get('categorias-de-campos', [App\Http\Controllers\CategoriaCampoController::class, 'index']);
+    // Route::get('categoria_campos', [App\Http\Controllers\CategoriaCampoController::class, 'getCategoriaCampos']);
+    // Route::get('categoria_campos/create', [App\Http\Controllers\CategoriaCampoController::class, 'create']);
+    // Route::get('categoria_campos/edit', [App\Http\Controllers\CategoriaCampoController::class, 'edit']);
+    // Route::post('categoria_campos', [App\Http\Controllers\CategoriaCampoController::class, 'store']);
+    // Route::put('categoria_campos', [App\Http\Controllers\CategoriaCampoController::class, 'update']);
     
-    Route::delete("categoria_campos/{id}", [App\Http\Controllers\CategoriaCampoController::class, "destroy"]);
+    // Route::delete("categoria_campos/{id}", [App\Http\Controllers\CategoriaCampoController::class, "destroy"]);
+
+    //formularios
+    Route::get('tipoformularios', [App\Http\Controllers\TipoFormularioController::class, 'index']);
+    Route::get('tipoformularios/gettipoformularios', [App\Http\Controllers\TipoFormularioController::class, 'getTipoFormularios']);
+    Route::get('tipoformularios/create', [App\Http\Controllers\TipoFormularioController::class, 'create']);
+    Route::get('tipoformularios/edit', [App\Http\Controllers\TipoFormularioController::class, 'edit']);
+    Route::post('tipoformularios', [App\Http\Controllers\TipoFormularioController::class, 'store']);
+    Route::put('tipoformularios', [App\Http\Controllers\TipoFormularioController::class, 'update']);
+    
+    Route::delete("tipoformularios/{id}", [App\Http\Controllers\TipoFormularioController::class, "destroy"]);
 
     //tipo campos
     Route::get('tipos-de-campos', [App\Http\Controllers\TipoCampoController::class, 'index']);

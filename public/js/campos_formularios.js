@@ -46,7 +46,7 @@ app.controller('campos_formularios', function ($scope, $http) {
             function successCallback(response) {
                 console.log(response);    
                 $('#createForm').trigger('reset');
-                $('#agregarCamposFormulariosModal').modal('show');
+                $('#agregarModal').modal('show');
             },
             function errorCallback(response) {
                 console.log(response);
@@ -75,7 +75,7 @@ app.controller('campos_formularios', function ($scope, $http) {
                 $scope.campos_formularios = [...$scope.campos_formularios, response.data.campos_formulario];
                 $scope.createForm = {};
                 $('#createForm').trigger('reset');
-                $('#agregarCamposFormulariosModal').modal('hide');
+                $('#agregarModal').modal('hide');
                 swal(
                     'Mensaje del Sistema',
                     response.data.message,
@@ -84,7 +84,7 @@ app.controller('campos_formularios', function ($scope, $http) {
             },
             function errorCallback(response) {
                 console.log(response);
-                //$('#agregarCamposFormulariosModal').modal('hide');
+                //$('#agregarModal').modal('hide');
                 
                 if (response.status === 422) {
                     let mensaje = '';
@@ -109,9 +109,11 @@ app.controller('campos_formularios', function ($scope, $http) {
         $('#edit-nombre').val(campos_formulario.nombre);
         $('#edit-etiqueta').val(campos_formulario.etiqueta);
         $('#edit-id').val(campos_formulario.id);
-        $('#edit-categoria_id').val(campos_formulario.categoria.id);
-        $('#edit-tipo_campo_id').val(campos_formulario.tipo_campo.id);
+        $('#edit-tipo_formulario_id').val(campos_formulario.tipo_formulario.id);
+        $('#edit-tipo_campo').val(campos_formulario.tipo_campo.nombre);
         $('#edit-etiqueta').val(campos_formulario.etiqueta);
+        $('#edit-requerido').prop('checked', campos_formulario.requerido);
+        $('#edit-sololectura').prop('checked', campos_formulario.sololectura);
         
         $http({
             url: 'campos_formularios/edit',
@@ -123,7 +125,7 @@ app.controller('campos_formularios', function ($scope, $http) {
         }).then(
             function successCallback(response) {
                 console.log(response);
-                $('#editarCamposFormulariosModal').modal('show');
+                $('#editarModal').modal('show');
             },
             function errorCallback(response) {
                 console.log(response);
@@ -141,8 +143,10 @@ app.controller('campos_formularios', function ($scope, $http) {
             id: $('#edit-id').val(),
             nombre: $('#edit-nombre').val(),
             etiqueta: $('#edit-etiqueta').val(),
-            categoria_id: $('#edit-categoria_id').val(),
-            tipo_campo_id: $('#edit-tipo_campo_id').val(),
+            tipo_formulario_id: $('#edit-tipo_formulario_id').val(),
+            tipo_campo: $('#edit-tipo_campo').val(),
+            requerido: $('#edit-requerido').prop('checked'),
+            sololectura: $('#edit-sololectura').prop('checked'),
         };
 
         $http({
@@ -158,7 +162,7 @@ app.controller('campos_formularios', function ($scope, $http) {
                 console.log('response: ', response);
                 $scope.campos_formulario = response.data.campos_formulario;
                 $scope.campos_formularios = $scope.campos_formularios.map(campos_formulario => (campos_formulario.id == response.data.campos_formulario.id) ? campos_formulario = response.data.campos_formulario : campos_formulario);
-                $('#editarCamposFormulariosModal').modal('hide');
+                $('#editarModal').modal('hide');
                 swal(
                     'Mensaje del Sistema',
                     response.data.message,
@@ -187,7 +191,7 @@ app.controller('campos_formularios', function ($scope, $http) {
     $scope.confirmarEliminar = function (campos_formulario) {
         $scope.campos_formulario = campos_formulario;
         $('#nombre-campos_formulario').html(campos_formulario.nombre);
-        $('#eliminarCamposFormulariosModal').modal('show');
+        $('#eliminarModal').modal('show');
     }
 
     $scope.delete = function () {
@@ -204,7 +208,7 @@ app.controller('campos_formularios', function ($scope, $http) {
             function successCallback(response) {
                 console.log(response);
                 $scope.campos_formularios = $scope.campos_formularios.filter(campos_formulario => campos_formulario.id !== $scope.campos_formulario.id);
-                $('#eliminarCamposFormulariosModal').modal('hide');
+                $('#eliminarModal').modal('hide');
                 swal(
                     'Mensaje del Sistema',
                     response.data.message,

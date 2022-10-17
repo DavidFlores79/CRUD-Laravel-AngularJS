@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCategoriaCamposTable extends Migration
+class CreatePerfilesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,8 @@ class CreateCategoriaCamposTable extends Migration
      */
     public function up()
     {
-        Schema::create('categoria_campos', function (Blueprint $table) {
+        Schema::create('perfiles', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->string('tabla');
-            $table->boolean('visible')->default(1);
-            $table->boolean('estatus')->default(1);
             $table->timestamps();
         });
     }
@@ -30,6 +26,6 @@ class CreateCategoriaCamposTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('categoria_campos');
+        Schema::dropIfExists('perfiles');
     }
 }

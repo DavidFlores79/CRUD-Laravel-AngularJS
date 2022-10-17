@@ -145,7 +145,4 @@
 @section('ngFile')
 <script src="{{ asset('js/home.js') }}"></script>
 
-<script>
-    let myUsuario = @json(auth()->user());
-</script>
 @endsection

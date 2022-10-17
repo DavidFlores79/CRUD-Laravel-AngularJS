@@ -9,9 +9,9 @@ class Campo extends Model
 {
     use HasFactory;
 
-    public function categoria()
+    public function tipo_formulario()
     {
-        return $this->belongsTo(CategoriaCampo::class, "categoria_id");
+        return $this->belongsTo(TipoFormulario::class, "tipo_formulario_id");
     }
 
     public function tipo_campo()

@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Campo;
-use App\Models\CategoriaCampo;
 use App\Models\TipoCampo;
+use App\Models\TipoFormulario;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
 
 class CampoController extends Controller
 {
@@ -20,8 +19,8 @@ class CampoController extends Controller
     {
         //return Schema::getColumnListing('users');
         // return "Hola mundo!";
-        $campos_formularios = Campo::with('categoria','tipo_campo')->get();
-        $formularios = CategoriaCampo::all();
+        $campos_formularios = Campo::with('tipo_formulario','tipo_campo')->get();
+        $formularios = TipoFormulario::all();
         $tipos_campo = TipoCampo::all();
 
         
@@ -70,16 +69,16 @@ class CampoController extends Controller
             $campos_formulario = new Campo();
             $campos_formulario->nombre = $request->input('nombre');
             $campos_formulario->etiqueta = $request->input('etiqueta');
-            $campos_formulario->categoria_id = $request->input('formulario');
+            $campos_formulario->tipo_formulario_id = $request->input('formulario');
             $campos_formulario->tipo_campo_id = TipoCampo::where('nombre', $request->input('tipo_campo'))->pluck('id')->firstOrFail();
-            if($request->input('requerido')) $campos_formulario->requerido = $request->input('requerido');
-            if($request->input('sololectura')) $campos_formulario->sololectura = $request->input('sololectura');
+            ($request->input('requerido')) ? $campos_formulario->requerido = true : $campos_formulario->requerido = false;
+            ($request->input('sololectura')) ? $campos_formulario->sololectura = true : $campos_formulario->sololectura = false;
             if($request->input('minlength')) $campos_formulario->minlength = $request->input('minlength');
             if($request->input('min')) $campos_formulario->min = $request->input('min');
             //return $campos_formulario;
 
             $campos_formulario->save();
-            $campos_formulario = $campos_formulario->load('categoria','tipo_campo');
+            $campos_formulario = $campos_formulario->load('tipo_formulario','tipo_campo');
     
             if(is_object($campos_formulario)) {
                 $data = [
@@ -112,7 +111,7 @@ class CampoController extends Controller
 
     public function update(Request $request)
     {
-        // return $request;
+        //return $request;
         //falta validar request
         $rules = [
             'nombre' => 'required|string|max:255',
@@ -128,10 +127,15 @@ class CampoController extends Controller
             
                 $campos_formulario->nombre = $request->input('nombre');
                 $campos_formulario->etiqueta = $request->input('etiqueta');
-                $campos_formulario->tipo_campo_id = $request->input('tipo_campo_id');
-                $campos_formulario->categoria_id = $request->input('categoria_id');
+                $campos_formulario->tipo_campo_id = TipoCampo::where('nombre', $request->input('tipo_campo'))->pluck('id')->firstOrFail();
+                $campos_formulario->tipo_formulario_id = $request->input('tipo_formulario_id');
+                ($request->input('requerido')) ? $campos_formulario->requerido = true : $campos_formulario->requerido = false;
+                ($request->input('sololectura')) ? $campos_formulario->sololectura = true : $campos_formulario->sololectura = false;
+                if($request->input('minlength')) $campos_formulario->minlength = $request->input('minlength');
+                if($request->input('min')) $campos_formulario->min = $request->input('min');
+    
                 $campos_formulario->save();
-                $campos_formulario = $campos_formulario->load('categoria','tipo_campo');
+                $campos_formulario = $campos_formulario->load('tipo_formulario','tipo_campo');
                 
                 $data = [
                     'code' => 200,
