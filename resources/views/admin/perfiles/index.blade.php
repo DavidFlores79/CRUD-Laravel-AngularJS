@@ -91,10 +91,10 @@
                         <div class="custom-control custom-switch" ng-if="campo.tipo_campo.nombre == 'toggleswitch'">
                             <input  type="checkbox"
                                     class="custom-control-input"
-                                    name="@{{ campo.nombre }}" 
-                                    id="@{{ campo.nombre }}" 
+                                    name="@{{ campo.id }}-@{{ campo.nombre }}" 
+                                    id="@{{ campo.id }}-@{{ campo.nombre }}" 
                                     ng-model="createForm[campo.nombre]">
-                            <label class="custom-control-label" for="@{{ campo.nombre }}">@{{ campo.etiqueta }}</label>
+                            <label class="custom-control-label" for="@{{ campo.id }}-@{{ campo.nombre }}">@{{ campo.etiqueta }}</label>
                         </div>
                     </div>
                     <div class="form-group">
@@ -146,10 +146,10 @@
                         <div class="custom-control custom-switch" ng-if="campo.tipo_campo.nombre == 'toggleswitch'">
                             <input  type="checkbox"
                                     class="custom-control-input"
-                                    name="@{{ campo.nombre }}" 
-                                    id="@{{ campo.nombre }}" 
+                                    name="@{{ campo.id }}-@{{ campo.nombre }}" 
+                                    id="@{{ campo.id }}-@{{ campo.nombre }}" 
                                     ng-model="editForm[campo.nombre]">
-                            <label class="custom-control-label" for="@{{ campo.nombre }}">@{{ campo.etiqueta }}</label>
+                            <label class="custom-control-label" for="@{{ campo.id }}-@{{ campo.nombre }}">@{{ campo.etiqueta }}</label>
                         </div>
                     </div>
                     <div class="form-group">
