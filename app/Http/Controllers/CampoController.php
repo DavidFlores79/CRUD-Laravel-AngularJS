@@ -63,7 +63,8 @@ class CampoController extends Controller
             'sololectura' => 'boolean',
             'minlength' => 'integer|max:255',
             'min' => 'integer|max:255',
-            'ng_options' => 'nullable|string|max:255',
+            'ng_options_array' => 'nullable|string|max:255',
+            'ng_options_item' => 'nullable|string|max:255',
         ];
         $this->validate($request, $rules);
 
@@ -77,9 +78,11 @@ class CampoController extends Controller
             ($request->input('sololectura')) ? $campos_formulario->sololectura = true : $campos_formulario->sololectura = false;
             ($request->input('minlength')) ? $campos_formulario->minlength = $request->input('minlength') : null;
             ($request->input('min')) ? $campos_formulario->min = $request->input('min') : null;
-            ($request->input('ng_options')) ? $campos_formulario->ng_options = $request->input('ng_options') : null;
+            if ($request->input('ng_options')) {
+                $campos_formulario->ng_options = "dato.id as dato.nombre disable when dato.estatus == 0 for dato in ".$request->input('ng_options');
+            }
             //return $campos_formulario;
-
+            //color.id as color.nombre disable when color.shade == 'dark' for color in colores
             $campos_formulario->save();
             $campos_formulario = $campos_formulario->load('tipo_formulario','tipo_campo');
     

@@ -16,8 +16,8 @@ class CreatePerfilesTable extends Migration
         Schema::create('perfiles', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->boolean('visible')->default(1);
-            $table->boolean('estatus')->default(1);
+            $table->boolean('visible')->default(true);
+            $table->boolean('estatus')->default(true);
             $table->timestamps();
         });
     }

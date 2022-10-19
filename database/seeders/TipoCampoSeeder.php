@@ -34,10 +34,7 @@ class TipoCampoSeeder extends Seeder
             'nombre' => 'selectbox',
         ]);
         TipoCampo::create([
-            'nombre' => 'switch',
-        ]);
-        TipoCampo::create([
-            'nombre' => 'check',
+            'nombre' => 'toggleswitch',
         ]);
     }
 }

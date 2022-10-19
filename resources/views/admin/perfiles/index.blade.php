@@ -22,6 +22,8 @@
                                     <th scope="col">#</th>
                                     <th scope="col">Nombre</th>
                                     <th scope="col">Fecha Creación</th>
+                                    <th scope="col">Estatus</th>
+                                    <th scope="col">Visible</th>
                                     <th scope="col">Opciones</th>
                                 </tr>
                             </thead>
@@ -30,6 +32,8 @@
                                     <td>@{{ dato.id }}</td>
                                     <td>@{{ dato.nombre }}</td>
                                     <td>@{{ dato.created_at | date }}</td>
+                                    <td ng-class="{0:'text-danger', 1:'text-success'}[dato.estatus]">@{{ dato.estatus | activoInactivo }}</td>
+                                    <td ng-class="{0:'text-danger', 1:'text-success'}[dato.visible]">@{{ dato.visible | siNo }}</td>
                                     <td>
                                         <button type="button" class="btn btn-sm btn-primary" ng-click="edit(dato)"><i class="fas fa-edit"></i></button>
                                         <button type="button" class="btn btn-sm btn-danger" ng-click="confirmarEliminar(dato)"><i class="fas fa-trash"></i></button>
@@ -58,7 +62,19 @@
             <div class="modal-body">
                 <form id="createForm" ng-submit="store()" class="was-validated">
                     <div class="form-group" ng-repeat="campo in formulario_crear track by $index">
-                        <label for="@{{ campo.nombre }}">@{{ campo.etiqueta }}</label>
+                        <label for="@{{ campo.nombre }}" ng-if="campo.tipo_campo.nombre != 'hidden' && campo.tipo_campo.nombre != 'toggleswitch'">@{{ campo.etiqueta }}</label>
+                        
+                        <select ng-if="campo.tipo_campo.nombre == 'selectbox'"
+                                class="form-control" 
+                                id="@{{ campo.nombre }}" 
+                                name="@{{ campo.nombre }}"
+                                ng-model="createForm[campo.nombre]"
+                                ng-options="@{{ campo.ng_options }}"
+                                ng-readonly="@{{ campo.sololectura }}"
+                                ng-required="@{{ campo.requerido }}">
+                                <option value="">Selecciona...</option>
+                        </select>
+                        
                         <input  type="@{{ campo.tipo_campo.nombre }}" 
                                 minlength="@{{ campo.minlength }}" 
                                 min="@{{ campo.min }}" 
@@ -69,7 +85,17 @@
                                 placeholder="Escribe tu @{{ campo.etiqueta }}"
                                 ng-model="createForm[campo.nombre]"
                                 ng-required="@{{ campo.requerido }}"
+                                ng-if="campo.tipo_campo.nombre != 'selectbox' && campo.tipo_campo.nombre != 'toggleswitch'"
                         autofocus>
+
+                        <div class="custom-control custom-switch" ng-if="campo.tipo_campo.nombre == 'toggleswitch'">
+                            <input  type="checkbox"
+                                    class="custom-control-input"
+                                    name="@{{ campo.nombre }}" 
+                                    id="@{{ campo.nombre }}" 
+                                    ng-model="createForm[campo.nombre]">
+                            <label class="custom-control-label" for="@{{ campo.nombre }}">@{{ campo.etiqueta }}</label>
+                        </div>
                     </div>
                     <div class="form-group">
                         <button type="submit" class="btn btn-sm btn-primary">Guardar</button>
@@ -93,7 +119,18 @@
             <div class="modal-body">
                 <form ng-submit="update()" class="was-validated">
                     <div class="form-group" ng-repeat="campo in formulario_editar track by $index">
-                        <label ng-if="campo.tipo_campo.nombre != 'hidden'" for="@{{ campo.nombre }}">@{{ campo.etiqueta }}</label>
+                        <label ng-if="campo.tipo_campo.nombre != 'hidden' && campo.tipo_campo.nombre != 'toggleswitch'" for="@{{ campo.nombre }}">@{{ campo.etiqueta }}</label>
+                        <select ng-if="campo.tipo_campo.nombre == 'selectbox'"
+                                class="form-control" 
+                                id="@{{ campo.nombre }}" 
+                                name="@{{ campo.nombre }}"
+                                ng-model="editForm[campo.nombre]"
+                                ng-options="@{{ campo.ng_options }}"
+                                ng-readonly="@{{ campo.sololectura }}"
+                                ng-required="@{{ campo.requerido }}">
+                                <option value="">Selecciona...</option>
+                        </select>
+
                         <input  type="@{{ campo.tipo_campo.nombre }}" 
                                 minlength="@{{ campo.minlength }}" 
                                 min="@{{ campo.min }}" 
@@ -104,7 +141,16 @@
                                 placeholder="Escribe tu @{{ campo.etiqueta }}"
                                 ng-model="editForm[campo.nombre]"
                                 ng-required="@{{ campo.requerido }}"
-                        autofocus>
+                                ng-if="campo.tipo_campo.nombre != 'selectbox' && campo.tipo_campo.nombre != 'toggleswitch'"
+                                autofocus>
+                        <div class="custom-control custom-switch" ng-if="campo.tipo_campo.nombre == 'toggleswitch'">
+                            <input  type="checkbox"
+                                    class="custom-control-input"
+                                    name="@{{ campo.nombre }}" 
+                                    id="@{{ campo.nombre }}" 
+                                    ng-model="editForm[campo.nombre]">
+                            <label class="custom-control-label" for="@{{ campo.nombre }}">@{{ campo.etiqueta }}</label>
+                        </div>
                     </div>
                     <div class="form-group">
                         <button type="submit" class="btn btn-sm btn-primary">Guardar</button>
@@ -126,7 +172,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                ¿Realmente desea eliminar al perfil <span class="font-weight-bold" id="nombre-perfil"></span>?
+                ¿Realmente desea eliminar al perfil <span class="font-weight-bold" id="nombre-dato"></span>?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

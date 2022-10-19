@@ -82,9 +82,13 @@
                             <option value="">Elige una opcion...</option>
                         </select>
                     </div>
-                    <div class="form-group" ng-if="createForm.tipo_campo == 6" >
-                        <label for="minlength">Ng-Options</label>
-                        <input type="text" name="ng_options" id="ng_options" class="form-control" placeholder="color.id as color.nombre for color in colores" ng-model="createForm.ng_options" required autofocus>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" ng-if="createForm.tipo_campo == 6" >
+                                <label for="minlength">Ng-Options</label>
+                                <input type="text" name="ng_options" id="ng_options" class="form-control" placeholder="p.ej. colores" ng-model="createForm.ng_options" required autofocus>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group" ng-if="createForm.tipo_campo == 1 || createForm.tipo_campo == 3" >
                         <label for="minlength">Tamaño mínimo (minlength)</label>
@@ -189,7 +193,7 @@
                     </div>
                     <div class="form-group" ng-if="editForm.tipo_campo.nombre == 'selectbox'">
                         <label for="minlength">Ng-Options</label>
-                        <input type="text" name="edit-ng_options" id="edit-ng_options" class="form-control" placeholder="color.id as color.nombre for color in colores" ng-model="editForm.ng_options" required autofocus>
+                        <input type="text" name="edit-ng_options" id="edit-ng_options" class="form-control" placeholder="color.id as color.nombre disable when color.shade == 'dark' for color in colores" ng-model="editForm.ng_options" required autofocus>
                     </div>
                     <div class="form-group custom-control custom-switch custom-switch-lg">
                         <input type="checkbox" class="custom-control-input form-control" id="edit-requerido" name="edit-requerido" ng-checked="editForm.requerido == 1" ng-model="requerido">

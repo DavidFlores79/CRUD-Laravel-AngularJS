@@ -1,6 +1,5 @@
 var app = angular.module('perfiles', []);
 
-
 app.controller('perfiles', function ($scope, $http) {
     $scope.createForm = {};
     $scope.formulario_crear = [];
@@ -55,10 +54,12 @@ app.controller('perfiles', function ($scope, $http) {
             function successCallback(response) {
                 console.log(response);
                 $scope.formulario_crear = response.data.formulario_crear;
+                $scope.createForm.estatus = true;
+                $scope.createForm.visible = true;
                 $('#agregarModal').modal('show');
-                setTimeout(() => {
-                    $('#createForm').trigger('reset');
-                }, 500);
+                // setTimeout(() => {
+                //     $('#createForm').trigger('reset');
+                // }, 500);
             },
             function errorCallback(response) {
                 console.log(response);
@@ -129,6 +130,8 @@ app.controller('perfiles', function ($scope, $http) {
         $scope.editForm = {};
         if(dato.nombre) $scope.editForm['nombre'] = dato.nombre;
         if(dato.id) $scope.editForm['id'] = dato.id;
+        $scope.editForm.estatus = (dato.estatus) ? true:false;
+        $scope.editForm.visible = (dato.visible) ? true:false;
 
         $http({
             url: 'perfiles/edit',
@@ -208,7 +211,7 @@ app.controller('perfiles', function ($scope, $http) {
 
     $scope.confirmarEliminar = function (dato) {
         $scope.dato = dato;
-        $('#nombre-dato').html(dato.name);
+        $('#nombre-dato').html(dato.nombre);
         $('#eliminarModal').modal('show');
     }
 
@@ -248,7 +251,15 @@ app.controller('perfiles', function ($scope, $http) {
     $('#editarModal').on('hidden.bs.modal', function () {
         console.log('haz algo');
     });
-    
+});
 
-
+app.filter('activoInactivo', function() {
+    return function(input) {
+        return input ? 'Activo' : 'Inactivo';
+    }
+});
+app.filter('siNo', function() {
+    return function(input) {
+        return input ? 'Si' : 'No';
+    }
 });

@@ -3,15 +3,12 @@ var app = angular.module('home', []);
 
 app.controller('home', function ($scope, $http) {
     $scope.createForm = {};
+    $scope.editForm = {};
     $scope.formulario_crear = [];
     $scope.formulario_editar = [];
     $scope.dato = {};
     $scope.datos = [];
     $scope.perfiles = [];
-
-    $scope.toogleSwitch = function () {
-        alert('Hola');
-    }
     
     $http({
         url: 'get-usuarios',
@@ -60,10 +57,12 @@ app.controller('home', function ($scope, $http) {
             function successCallback(response) {
                 console.log(response);
                 $scope.formulario_crear = response.data.formulario_crear;
+                $scope.createForm.estatus = true;
+                $scope.createForm.visible = true;
                 $('#agregarModal').modal('show');
-                setTimeout(() => {
-                    $('#createForm').trigger('reset');
-                }, 500);
+                // setTimeout(() => {
+                //     $('#createForm').trigger('reset');
+                // }, 500);
             },
             function errorCallback(response) {
                 console.log(response);
@@ -85,8 +84,8 @@ app.controller('home', function ($scope, $http) {
     }
 
     $scope.store = function () {
-         console.log('name:', $scope.createForm);
-         return;
+        console.log('name:', $scope.createForm);
+        //return;
         $http({
             url: 'usuarios',
             method: 'POST',
@@ -99,8 +98,8 @@ app.controller('home', function ($scope, $http) {
             function successCallback(response) {
                 console.log(response);
                 $scope.datos = [...$scope.datos, response.data.user];
-                $scope.createForm = {};
-                $('#createForm').trigger('reset');
+                $scope.createForm = {}; 
+                //$('#createForm').trigger('reset');
                 $('#agregarModal').modal('hide');
                 swal(
                     'Mensaje del Sistema',
@@ -131,13 +130,14 @@ app.controller('home', function ($scope, $http) {
     }
 
     $scope.edit = function (usuario) {
-        $scope.editForm = {};
         if(usuario.name) $scope.editForm['name'] = usuario.name;
         if(usuario.email) $scope.editForm['email'] = usuario.email;
         if(usuario.id) $scope.editForm['id'] = usuario.id;
         if(usuario.direccion) $scope.editForm['direccion'] = usuario.direccion;
         if(usuario.edad) $scope.editForm['edad'] = parseInt(usuario.edad);
         if(usuario.perfil_id) $scope.editForm['perfil_id'] = usuario.perfil_id;
+        $scope.editForm.estatus = (usuario.estatus) ? true:false;
+        $scope.editForm.visible = (usuario.visible) ? true:false;
         
         console.log('EditForm', $scope.editForm);
         $http({
@@ -245,11 +245,19 @@ app.controller('home', function ($scope, $http) {
             },
             function errorCallback(response) {
                 console.log(response);
-                swal(
-                    'Mensaje del Sistema',
-                    response.data.message,
-                    response.data.status
-                );
+                if (response.status === 422) {
+                    let mensaje = '';
+                    for (let i in response.data.errors) {
+                        mensaje += response.data.errors[i] + '\n';
+                    }
+                    swal('Mensaje del Sistema', mensaje, 'error');
+                } else {
+                    swal(
+                        'Mensaje del Sistema',
+                        response.data.message,
+                        response.data.status
+                    );
+                }
             }
         );
         
@@ -258,55 +266,15 @@ app.controller('home', function ($scope, $http) {
     $('#editarModal').on('hidden.bs.modal', function () {
         console.log('haz algo');
     });
-
-    $scope.schedule = false;
-
-    $scope.toggleschedule = function(){
-        console.log("toggle: " + $scope.schedule);
-    };
 });
 
-app.directive('toggleCheckbox', function($timeout) {
-
-    /**
-     * Directive
-     */
-    return {
-        restrict: 'A',
-        transclude: true,
-        replace: false,
-        require: 'ngModel',
-        link: function ($scope, $element, $attr, ngModel) {
-
-            // update model from Element
-            var updateModelFromElement = function() {
-                // If modified
-                var checked = $element.prop('checked');
-                if (checked != ngModel.$viewValue) {
-                    // Update ngModel
-                    ngModel.$setViewValue(checked);
-                    $scope.$apply();
-                }
-            };
-
-            // Update input from Model
-            var updateElementFromModel = function(newValue) {
-                $element.trigger('change');
-            };
-
-            // Observe: Element changes affect Model
-            $element.on('change', function() {
-                updateModelFromElement();
-            });
-
-            $scope.$watch(function() {
-              return ngModel.$viewValue;
-            }, function(newValue) { 
-              updateElementFromModel(newValue);
-            }, true);
-
-            // Initialise BootstrapToggle
-            $element.bootstrapToggle();
-        }
-    };
+app.filter('activoInactivo', function() {
+    return function(input) {
+        return input ? 'Activo' : 'Inactivo';
+    }
+});
+app.filter('siNo', function() {
+    return function(input) {
+        return input ? 'Si' : 'No';
+    }
 });

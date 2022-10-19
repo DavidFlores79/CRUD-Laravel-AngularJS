@@ -73,6 +73,7 @@ class HomeController extends Controller
             'perfil_id' => 'required|exists:perfiles,id',
             'direccion' => 'string|nullable|max:255',
             'edad' => 'integer|nullable|max:255',
+            'estatus' => 'boolean|nullable',
         ];
         $this->validate($request, $rules);
 
@@ -84,6 +85,8 @@ class HomeController extends Controller
             $user->password = Hash::make($request->input('password'));
             if($request->input('direccion')) $user->direccion = $request->input('direccion');
             if($request->input('edad')) $user->edad = $request->input('edad');
+            $user->visible = ($request->input('visible')) ? 1:0;
+            $user->estatus = ($request->input('estatus')) ? 1:0;
             $user->save();
     
             if(is_object($user)) {
@@ -93,8 +96,15 @@ class HomeController extends Controller
                     'message' => 'Usuario creado satisfactoriamente',
                     'user' => $user->load('perfil'),
                 ];
+            } else {
+                $data = [
+                    'code' => 400,
+                    'status' => 'error',
+                    'message' => 'Se ha producido un error al guardar.',
+                ];
             }
             return response()->json($data, $data['code']);
+            
         } catch (\Throwable $th) {
             $data = [
                 'code' => 400,
@@ -137,6 +147,7 @@ class HomeController extends Controller
             'perfil_id' => 'exists:perfiles,id',
             'direccion' => 'string|nullable|max:255',
             'edad' => 'integer|nullable|max:255',
+            'estatus' => 'boolean|nullable',
         ];
         $this->validate($request, $rules);
 
@@ -151,6 +162,9 @@ class HomeController extends Controller
                 if ($request->input('perfil_id')) $user->perfil_id = $request->input('perfil_id');
                 if ($request->input('direccion')) $user->direccion = $request->input('direccion');
                 if ($request->input('edad')) $user->edad = $request->input('edad');
+                $user->visible = ($request->input('visible')) ? 1:0;
+                $user->estatus = ($request->input('estatus')) ? 1:0;
+    
                 $user->save();
                 
                 $data = [
@@ -161,7 +175,14 @@ class HomeController extends Controller
                 ];
 
                 return response()->json($data, $data['code']);
+            } else {
+                $data = [
+                    'code' => 400,
+                    'status' => 'error',
+                    'message' => 'Se ha producido un error al actualizar.',
+                ];
             }
+            return response()->json($data, $data['code']);
         } catch (\Throwable $th) {
             $data = [
                 'code' => 404,

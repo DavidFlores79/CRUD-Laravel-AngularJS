@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Campo;
 use App\Models\Perfil;
 use App\Models\TipoFormulario;
+use App\Scopes\VisibleScope;
 use App\Traits\FormularioTrait;
 use Illuminate\Http\Request;
 
@@ -23,7 +24,7 @@ class PerfilController extends Controller
 
     function getPerfiles()
     {
-        $perfiles = Perfil::all();
+        $perfiles = Perfil::withoutGlobalScope( VisibleScope::class )->get();
         
         if(is_object($perfiles)){
             $data = [
@@ -74,8 +75,8 @@ class PerfilController extends Controller
         try {
             $perfil = new Perfil();
             $perfil->nombre = $request->input('nombre');
-            if ($request->input('visible')) $perfil->visible = $request->input('visible');
-            if ($request->input('status')) $perfil->status = $request->input('status');
+            $perfil->visible = ($request->input('visible')) ? 1:0;
+            $perfil->estatus = ($request->input('estatus')) ? 1:0;
             $perfil->save();
     
             if(is_object($perfil)) {
@@ -85,8 +86,15 @@ class PerfilController extends Controller
                     'message' => 'Perfil creado satisfactoriamente',
                     'dato' => $perfil,
                 ];
+            } else {
+                $data = [
+                    'code' => 400,
+                    'status' => 'error',
+                    'message' => 'Se ha producido un error al guardar.',
+                ];
             }
             return response()->json($data, $data['code']);
+
         } catch (\Throwable $th) {
             $data = [
                 'code' => 400,
@@ -124,18 +132,20 @@ class PerfilController extends Controller
         $rules = [
             'nombre' => 'string|max:255',
             'id' => 'exists:perfiles,id',
+            'visible' => 'nullable|boolean',
+            'estatus' => 'nullable|boolean',
         ];
         $this->validate($request, $rules);
 
         if($request->input('id'))
-            $perfil = Perfil::where('id',$request->input('id'))->first();
-
+            $perfil = Perfil::withoutGlobalScope( VisibleScope::class )->where('id',$request->input('id'))->first();
+        
         try {
             if(is_object($perfil)) {
             
                 if ($request->input('nombre')) $perfil->nombre = $request->input('nombre');
-                if ($request->input('visible')) $perfil->visible = $request->input('visible');
-                if ($request->input('status')) $perfil->status = $request->input('status');    
+                $perfil->visible = ($request->input('visible')) ? 1:0;
+                $perfil->estatus = ($request->input('estatus')) ? 1:0;  
                 $perfil->save();
                 
                 $data = [
@@ -146,7 +156,15 @@ class PerfilController extends Controller
                 ];
 
                 return response()->json($data, $data['code']);
+            } else {
+                $data = [
+                    'code' => 400,
+                    'status' => 'error',
+                    'message' => 'Se ha producido un error al guardar.',
+                ];
             }
+            return response()->json($data, $data['code']);
+            
         } catch (\Throwable $th) {
             $data = [
                 'code' => 404,
