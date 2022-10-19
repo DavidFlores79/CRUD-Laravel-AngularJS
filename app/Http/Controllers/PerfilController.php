@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Campo;
 use App\Models\Perfil;
 use App\Models\TipoFormulario;
+use App\Traits\FormularioTrait;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
 
 class PerfilController extends Controller
 {
+    use FormularioTrait;
         /**
      * Show the application dashboard.
      *
@@ -73,6 +74,8 @@ class PerfilController extends Controller
         try {
             $perfil = new Perfil();
             $perfil->nombre = $request->input('nombre');
+            if ($request->input('visible')) $perfil->visible = $request->input('visible');
+            if ($request->input('status')) $perfil->status = $request->input('status');
             $perfil->save();
     
             if(is_object($perfil)) {
@@ -119,8 +122,8 @@ class PerfilController extends Controller
         //return $request;
         //validar request
         $rules = [
-            'nombre' => 'required|string|max:255',
-            'id' => 'required|exists:perfiles,id',
+            'nombre' => 'string|max:255',
+            'id' => 'exists:perfiles,id',
         ];
         $this->validate($request, $rules);
 
@@ -130,7 +133,9 @@ class PerfilController extends Controller
         try {
             if(is_object($perfil)) {
             
-                $perfil->nombre = $request->input('nombre');
+                if ($request->input('nombre')) $perfil->nombre = $request->input('nombre');
+                if ($request->input('visible')) $perfil->visible = $request->input('visible');
+                if ($request->input('status')) $perfil->status = $request->input('status');    
                 $perfil->save();
                 
                 $data = [
@@ -176,15 +181,4 @@ class PerfilController extends Controller
         return response()->json($data, $data['code']);
     }
 
-
-    public function getCamposTabla(Request $request) {
-        //validar request
-        $rules = [
-            'tabla' => 'required|exists:tipo_formularios,tabla',
-        ];
-        $this->validate($request, $rules);
-        
-        $tabla = $request->input('tabla');
-        return Schema::getColumnListing($tabla);
-    }
 }

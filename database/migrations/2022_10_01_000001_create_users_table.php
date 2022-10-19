@@ -18,15 +18,20 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('nickname')->nullable();
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('direccion')->nullable();
             $table->string('edad')->nullable();
+            $table->bigInteger('perfil_id')->unsigned();
             $table->string('fecha_baja')->nullable();
             $table->boolean('bloqueado')->default(0);
             $table->boolean('estatus')->default(1);
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
+        });
+
+        Schema::table('users', function($table) {
+            $table->foreign('perfil_id')->references('id')->on('perfiles')->onDelete('cascade');
         });
     }
 

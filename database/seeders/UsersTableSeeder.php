@@ -19,7 +19,7 @@ class UsersTableSeeder extends Seeder
             'nickname' => 'admin',
             'email' => 'admin@itsoft.mx',
             'password' => bcrypt('admin123'), // admin123
-            //'perfil_id' => 1,
+            'perfil_id' => 1,
         ]);
 
         User::create([
@@ -27,7 +27,7 @@ class UsersTableSeeder extends Seeder
             'nickname' => 'jestrella',
             'email' => 'jestrella@itsoft.mx',
             'password' => bcrypt('12345678'), //12345678
-            //'perfil_id' => 1,
+            'perfil_id' => 2,
         ]);
     }
 }

@@ -7,6 +7,11 @@ app.controller('home', function ($scope, $http) {
     $scope.formulario_editar = [];
     $scope.dato = {};
     $scope.datos = [];
+    $scope.perfiles = [];
+
+    $scope.toogleSwitch = function () {
+        alert('Hola');
+    }
     
     $http({
         url: 'get-usuarios',
@@ -19,7 +24,7 @@ app.controller('home', function ($scope, $http) {
         function successCallback(response) {
             console.log('index', response);
             $scope.datos = response.data.users;
-            console.log($scope.datos);
+            $scope.perfiles = response.data.perfiles;
         },
         function errorCallback(response) {
             console.log(response);
@@ -80,8 +85,8 @@ app.controller('home', function ($scope, $http) {
     }
 
     $scope.store = function () {
-        // console.log('name:', $scope.createForm);
-        // return;
+         console.log('name:', $scope.createForm);
+         return;
         $http({
             url: 'usuarios',
             method: 'POST',
@@ -132,7 +137,9 @@ app.controller('home', function ($scope, $http) {
         if(usuario.id) $scope.editForm['id'] = usuario.id;
         if(usuario.direccion) $scope.editForm['direccion'] = usuario.direccion;
         if(usuario.edad) $scope.editForm['edad'] = parseInt(usuario.edad);
-
+        if(usuario.perfil_id) $scope.editForm['perfil_id'] = usuario.perfil_id;
+        
+        console.log('EditForm', $scope.editForm);
         $http({
             url: 'usuarios/edit',
             method: 'POST',
@@ -251,7 +258,55 @@ app.controller('home', function ($scope, $http) {
     $('#editarModal').on('hidden.bs.modal', function () {
         console.log('haz algo');
     });
-    
 
+    $scope.schedule = false;
 
+    $scope.toggleschedule = function(){
+        console.log("toggle: " + $scope.schedule);
+    };
+});
+
+app.directive('toggleCheckbox', function($timeout) {
+
+    /**
+     * Directive
+     */
+    return {
+        restrict: 'A',
+        transclude: true,
+        replace: false,
+        require: 'ngModel',
+        link: function ($scope, $element, $attr, ngModel) {
+
+            // update model from Element
+            var updateModelFromElement = function() {
+                // If modified
+                var checked = $element.prop('checked');
+                if (checked != ngModel.$viewValue) {
+                    // Update ngModel
+                    ngModel.$setViewValue(checked);
+                    $scope.$apply();
+                }
+            };
+
+            // Update input from Model
+            var updateElementFromModel = function(newValue) {
+                $element.trigger('change');
+            };
+
+            // Observe: Element changes affect Model
+            $element.on('change', function() {
+                updateModelFromElement();
+            });
+
+            $scope.$watch(function() {
+              return ngModel.$viewValue;
+            }, function(newValue) { 
+              updateElementFromModel(newValue);
+            }, true);
+
+            // Initialise BootstrapToggle
+            $element.bootstrapToggle();
+        }
+    };
 });

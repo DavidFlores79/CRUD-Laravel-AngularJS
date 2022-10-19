@@ -26,6 +26,7 @@ class CreateCamposTable extends Migration
             $table->integer('minlength')->nullable();
             $table->integer('min')->nullable();
             $table->boolean('sololectura')->default(0);
+            $table->string('ng_options')->nullable();
             
             //superusuarios unicamente podran habilitarlos     
             $table->boolean('obligatorio')->default(0);

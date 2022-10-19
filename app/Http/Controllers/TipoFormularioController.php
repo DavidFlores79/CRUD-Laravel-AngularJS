@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\TipoFormulario;
+use App\Traits\FormularioTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class TipoFormularioController extends Controller
 {
+    use FormularioTrait;
+    
     public function index()
     {        
         return view('admin.tipo_formularios.index');
@@ -152,10 +155,5 @@ class TipoFormularioController extends Controller
             ];
         }
         return response()->json($data, $data['code']);
-    }
-
-    public function getTablas() {
-        $all_tablas = array_map('reset', DB::select('SHOW TABLES'));
-        return array_filter(array_map(function($n) { if(($n != 'migrations') && ($n != 'failed_jobs') && ($n != 'password_resets')) return $n; }, $all_tablas));
     }
 }

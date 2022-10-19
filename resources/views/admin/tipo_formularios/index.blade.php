@@ -64,6 +64,7 @@
                         <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Nombre del Formulario" ng-model="createForm.nombre" required autofocus>
                     </div>
                     <div class="form-group">
+                        <label for="edit-tabla">Tabla:</label>
                         <select class="form-control" id="tabla" name="tabla" ng-model="createForm.tabla" required autofocus>
                             <option value="">Elige una opcion...</option>
                             <option ng-repeat="tabla in tablas" value="@{{ tabla }}">
@@ -98,6 +99,7 @@
                         <input type="text" name="nombre" id="edit-nombre" class="form-control" ng-model="editForm.nombre" placeholder="Nombre">
                     </div>
                     <div class="form-group">
+                        <label for="edit-tabla">Tabla:</label>
                         <select class="form-control" id="edit-tabla" name="edit-tabla" ng-model="editForm.tabla" ng-options="tabla for tabla in tablas">
                         </select>
                     </div>

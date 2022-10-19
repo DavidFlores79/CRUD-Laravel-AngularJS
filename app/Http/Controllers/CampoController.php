@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Campo;
 use App\Models\TipoCampo;
 use App\Models\TipoFormulario;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class CampoController extends Controller
@@ -56,25 +57,27 @@ class CampoController extends Controller
         $rules = [
             'nombre' => 'required|string|max:255',
             'etiqueta' => 'required|string|max:255',
-            'formulario.id' => 'required|exists:tipo_formularios,id',
-            'tipo_campo' => 'required|string|exists:tipo_campos,nombre|max:255',
+            'formulario' => 'required|exists:tipo_formularios,id',
+            'tipo_campo' => 'required|exists:tipo_campos,id',
             'requerido' => 'boolean',
             'sololectura' => 'boolean',
             'minlength' => 'integer|max:255',
             'min' => 'integer|max:255',
+            'ng_options' => 'nullable|string|max:255',
         ];
         $this->validate($request, $rules);
-        //return $request;
+
         try {
             $campos_formulario = new Campo();
             $campos_formulario->nombre = $request->input('nombre');
             $campos_formulario->etiqueta = $request->input('etiqueta');
-            $campos_formulario->tipo_formulario_id = $request->input('formulario.id');
-            $campos_formulario->tipo_campo_id = TipoCampo::where('nombre', $request->input('tipo_campo'))->pluck('id')->firstOrFail();
+            $campos_formulario->tipo_formulario_id = $request->input('formulario');
+            $campos_formulario->tipo_campo_id = $request->input('tipo_campo');
             ($request->input('requerido')) ? $campos_formulario->requerido = true : $campos_formulario->requerido = false;
             ($request->input('sololectura')) ? $campos_formulario->sololectura = true : $campos_formulario->sololectura = false;
-            if($request->input('minlength')) $campos_formulario->minlength = $request->input('minlength');
-            if($request->input('min')) $campos_formulario->min = $request->input('min');
+            ($request->input('minlength')) ? $campos_formulario->minlength = $request->input('minlength') : null;
+            ($request->input('min')) ? $campos_formulario->min = $request->input('min') : null;
+            ($request->input('ng_options')) ? $campos_formulario->ng_options = $request->input('ng_options') : null;
             //return $campos_formulario;
 
             $campos_formulario->save();
@@ -121,18 +124,21 @@ class CampoController extends Controller
 
         if($request->input('id'))
             $campos_formulario = Campo::where('id',$request->input('id'))->first();
-
+        //return $campos_formulario;
+        
+        //return $request;
         try {
             if(is_object($campos_formulario)) {
             
                 $campos_formulario->nombre = $request->input('nombre');
                 $campos_formulario->etiqueta = $request->input('etiqueta');
-                $campos_formulario->tipo_campo_id = TipoCampo::where('nombre', $request->input('tipo_campo'))->pluck('id')->firstOrFail();
                 $campos_formulario->tipo_formulario_id = $request->input('tipo_formulario_id');
+                $campos_formulario->tipo_campo_id = $request->input('tipo_campo_id');
                 ($request->input('requerido')) ? $campos_formulario->requerido = true : $campos_formulario->requerido = false;
                 ($request->input('sololectura')) ? $campos_formulario->sololectura = true : $campos_formulario->sololectura = false;
-                if($request->input('minlength')) $campos_formulario->minlength = $request->input('minlength');
-                if($request->input('min')) $campos_formulario->min = $request->input('min');
+                ($request->input('minlength')) ? $campos_formulario->minlength = $request->input('minlength') : null;
+                ($request->input('min')) ? $campos_formulario->min = $request->input('min') : null;
+                ($request->input('ng_options')) ? $campos_formulario->ng_options = $request->input('ng_options') : null;
     
                 $campos_formulario->save();
                 $campos_formulario = $campos_formulario->load('tipo_formulario','tipo_campo');

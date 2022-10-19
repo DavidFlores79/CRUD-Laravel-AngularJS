@@ -7,6 +7,7 @@ app.controller('campos_formularios', function ($scope, $http) {
     $scope.formularios = [];
     $scope.tipos_campo = [];
     $scope.createForm = {};
+    $scope.editForm = {};
     
     $http({
         url: 'campos_formularios',
@@ -17,14 +18,14 @@ app.controller('campos_formularios', function ($scope, $http) {
         },
     }).then(
         function successCallback(response) {
-            console.log(response);
+            //console.log(response);
             $scope.campos_formularios = response.data.campos_formularios;
             $scope.formularios = response.data.formularios;
             $scope.tipos_campo = response.data.tipos_campo;
-            console.log($scope.campos_formularios);
+            //console.log($scope.campos_formularios);
         },
         function errorCallback(response) {
-            console.log(response);
+            //console.log(response);
             swal(
                 configuraciones.titulo,
                 response.data.message,
@@ -105,15 +106,10 @@ app.controller('campos_formularios', function ($scope, $http) {
     }
 
     $scope.edit = function (campos_formulario) {
-        console.log('cat: ', campos_formulario);
-        $('#edit-nombre').val(campos_formulario.nombre);
-        $('#edit-etiqueta').val(campos_formulario.etiqueta);
-        $('#edit-id').val(campos_formulario.id);
-        $('#edit-tipo_formulario_id').val(campos_formulario.tipo_formulario.id);
-        $('#edit-tipo_campo').val(campos_formulario.tipo_campo.nombre);
-        $('#edit-etiqueta').val(campos_formulario.etiqueta);
-        $('#edit-requerido').prop('checked', campos_formulario.requerido);
-        $('#edit-sololectura').prop('checked', campos_formulario.sololectura);
+        console.log('campos_formulario: ', campos_formulario);
+        $scope.editForm = campos_formulario;
+        console.log('editForm: ', $scope.editForm);
+        $scope.pedirCamposTabla($scope.editForm.tipo_formulario.id);
         
         $http({
             url: 'campos_formularios/edit',
@@ -124,11 +120,11 @@ app.controller('campos_formularios', function ($scope, $http) {
             },
         }).then(
             function successCallback(response) {
-                console.log(response);
+                //console.log(response);
                 $('#editarModal').modal('show');
             },
             function errorCallback(response) {
-                console.log(response);
+                //console.log(response);
                 swal(
                     'Mensaje del Sistema',
                     response.data.message,
@@ -139,20 +135,13 @@ app.controller('campos_formularios', function ($scope, $http) {
     }
 
     $scope.update = function () {
-        let campos_formulario_editado = {
-            id: $('#edit-id').val(),
-            nombre: $('#edit-nombre').val(),
-            etiqueta: $('#edit-etiqueta').val(),
-            tipo_formulario_id: $('#edit-tipo_formulario_id').val(),
-            tipo_campo: $('#edit-tipo_campo').val(),
-            requerido: $('#edit-requerido').prop('checked'),
-            sololectura: $('#edit-sololectura').prop('checked'),
-        };
+        $scope.editForm.requerido = $('#edit-requerido').prop('checked');
+        $scope.editForm.sololectura = $('#edit-sololectura').prop('checked');
 
         $http({
             url: `campos_formularios`,
             method: 'PUT',
-            data: campos_formulario_editado,
+            data: $scope.editForm,
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
@@ -227,16 +216,26 @@ app.controller('campos_formularios', function ($scope, $http) {
         
     }
 
-    $('#editarUsuarioModal').on('hidden.bs.modal', function () {
+    $('#editarModal').on('hidden.bs.modal', function () {
         console.log('haz algo');
     });
 
     $scope.camposTabla = function () {
-
-        if($scope.createForm.formulario.tabla) {
+        if(!$scope.createForm.formulario) {
             $scope.nombre_campos = {};
-            return;
+            console.log('vacio create');
+        } else {
+            $scope.pedirCamposTabla($scope.createForm.formulario);
         }
+        if(!$scope.editForm.tipo_formulario_id) {
+            $scope.nombre_campos = {};
+            console.log('vacio edit');
+        } else {
+            $scope.pedirCamposTabla($scope.editForm.tipo_formulario_id);
+        }
+    }
+
+    $scope.pedirCamposTabla = function (id) {
         $http({
             url: 'get-campos-tabla',
             method: 'POST',
@@ -245,7 +244,7 @@ app.controller('campos_formularios', function ($scope, $http) {
                 'Accept': 'application/json',
             },
             data: {
-                'tabla': $scope.createForm.formulario.tabla
+                'id': id
             }
         }).then(
             function successCallback(response) {
@@ -255,7 +254,7 @@ app.controller('campos_formularios', function ($scope, $http) {
             function errorCallback(response) {
                 console.log(response);
                 swal(
-                    configuraciones.titulo,
+                    'Mensaje del Sistema',
                     response.data.message,
                     tiposDeMensaje.error
                 );
