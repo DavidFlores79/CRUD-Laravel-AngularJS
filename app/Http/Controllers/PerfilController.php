@@ -187,7 +187,7 @@ class PerfilController extends Controller
                 'code' => 200,
                 'status' => 'success',
                 'message' => 'Perfil eliminado satisfactoriamente',
-                'perfil' => $perfil,
+                'dato' => $perfil,
             ];
         } else {
             $data = [
